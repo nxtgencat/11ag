@@ -71,7 +71,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   });
 
-  const [activeChatId, setActiveChatIdState] = useState<string | null>('c1');
+  const [activeChatId, setActiveChatIdState] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState<ChatFilter>('all');
   const [activeTab, setActiveTab] = useState<ActiveTab>('chats');
   const [searchQuery, setSearchQuery] = useState('');

@@ -9,13 +9,13 @@ export const AuthPage: React.FC = () => {
   const { authStep } = useAuth();
 
   return (
-    <div className="min-h-screen w-full bg-paper dark:bg-inkdark flex flex-col items-center justify-center p-4 relative overflow-hidden select-none transition-colors">
+    <div className="min-h-screen w-full bg-paper dark:bg-inkdark flex flex-col items-center justify-center p-4 py-8 sm:py-12 relative overflow-y-auto transition-colors">
       {/* Decorative Tearline Floating Accent Cards */}
-      <div className="absolute top-12 left-12 w-48 h-32 rounded-xl bg-cobalt/5 border border-cobalt/15 rotate-[-8deg] pointer-events-none hidden md:block" />
-      <div className="absolute bottom-12 right-12 w-52 h-36 rounded-xl bg-amber/5 border border-amber/15 rotate-[6deg] pointer-events-none hidden md:block" />
+      <div className="fixed top-12 left-12 w-48 h-32 rounded-xl bg-cobalt/5 border border-cobalt/15 rotate-[-8deg] pointer-events-none hidden md:block" />
+      <div className="fixed bottom-12 right-12 w-52 h-36 rounded-xl bg-amber/5 border border-amber/15 rotate-[6deg] pointer-events-none hidden md:block" />
 
       {/* Main Center Container */}
-      <div className="w-full max-w-md z-10 space-y-6 animate-fade-in">
+      <div className="w-full max-w-md my-auto space-y-6 z-10 animate-fade-in">
         {/* Tearline Brand Tile & Header */}
         <div className="text-center flex flex-col items-center">
           <div className="w-12 h-12 rounded-xl bg-ink dark:bg-paperdark text-paper dark:text-inkdark grid place-content-center font-display font-bold text-xl rotate-[-4deg] shadow-md mb-4">
@@ -41,7 +41,7 @@ export const AuthPage: React.FC = () => {
         {authStep === 'profile' && <ProfileSetup />}
 
         {/* Footer Security Badge */}
-        <div className="text-center flex items-center justify-center gap-2 text-slate dark:text-slatedark font-mono text-[11px]">
+        <div className="text-center flex items-center justify-center gap-2 text-slate dark:text-slatedark font-mono text-[11px] pb-4">
           <ShieldCheck className="w-3.5 h-3.5 text-mint" />
           <span>Protected by Signal Protocol Encryption</span>
         </div>
