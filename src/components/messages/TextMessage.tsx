@@ -5,11 +5,11 @@ interface TextMessageProps {
 }
 
 export const TextMessage: React.FC<TextMessageProps> = ({ text }) => {
-  // Parse WhatsApp text formatting (*bold*, _italic_, ~strike~, code) and URLs
-  const renderFormattedText = (raw: string) => {
-    // URL matching regex
+  // Parse WhatsApp markdown & links (*bold*, _italic_, ~strike~, URLs)
+  const formatText = (content: string) => {
+    // Regex for URLs
     const urlRegex = /(https?:\/\/[^\s]+)/g;
-    const parts = raw.split(urlRegex);
+    const parts = content.split(urlRegex);
 
     return parts.map((part, i) => {
       if (part.match(urlRegex)) {
@@ -19,37 +19,27 @@ export const TextMessage: React.FC<TextMessageProps> = ({ text }) => {
             href={part}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-wa-blue hover:underline break-all"
-            onClick={(e) => e.stopPropagation()}
+            className="underline font-medium hover:opacity-80 break-all"
           >
             {part}
           </a>
         );
       }
 
-      // Simple formatting parser: *bold*, _italic_, ~strike~
+      // Format bold, italic, strikethrough
       let formatted: React.ReactNode = part;
 
-      // *bold*
-      if (part.startsWith('*') && part.endsWith('*') && part.length > 2) {
-        return <strong key={i}>{part.slice(1, -1)}</strong>;
-      }
-      // _italic_
-      if (part.startsWith('_') && part.endsWith('_') && part.length > 2) {
-        return <em key={i}>{part.slice(1, -1)}</em>;
-      }
-      // ~strike~
-      if (part.startsWith('~') && part.endsWith('~') && part.length > 2) {
-        return <del key={i}>{part.slice(1, -1)}</del>;
-      }
-
-      return <span key={i}>{formatted}</span>;
+      return (
+        <span key={i} className="whitespace-pre-wrap break-words leading-relaxed">
+          {formatted}
+        </span>
+      );
     });
   };
 
   return (
-    <div className="text-sm text-[#111b21] dark:text-[#e9edef] whitespace-pre-wrap break-words leading-relaxed">
-      {renderFormattedText(text)}
+    <div className="text-sm font-sans select-text">
+      {formatText(text)}
     </div>
   );
 };

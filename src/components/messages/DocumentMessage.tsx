@@ -17,34 +17,27 @@ export const DocumentMessage: React.FC<DocumentMessageProps> = ({ attachment }) 
     document.body.removeChild(a);
   };
 
-  const getDocBadgeColor = (fileName = '') => {
-    if (fileName.endsWith('.pdf')) return 'bg-rose-500 text-white';
-    if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls') || fileName.endsWith('.csv')) return 'bg-emerald-600 text-white';
-    if (fileName.endsWith('.docx') || fileName.endsWith('.doc')) return 'bg-blue-600 text-white';
-    return 'bg-indigo-500 text-white';
-  };
-
   const getExtension = (fileName = '') => {
     const ext = fileName.split('.').pop();
     return ext ? ext.toUpperCase() : 'DOC';
   };
 
   return (
-    <div className="flex items-center gap-3 p-2.5 rounded-xl bg-black/5 dark:bg-black/20 max-w-sm border border-[#e9edef] dark:border-[#2a3942]">
+    <div className="flex items-center gap-3 p-3 rounded-xl bg-ink/5 dark:bg-white/5 border border-line dark:border-linedark max-w-sm">
       {/* File Icon Badge */}
-      <div className={`w-12 h-14 rounded-lg ${getDocBadgeColor(attachment.fileName)} flex flex-col items-center justify-center shrink-0 shadow-2xs`}>
-        <FileText className="w-6 h-6 stroke-1 mb-0.5" />
-        <span className="text-[9px] font-bold tracking-wider">
+      <div className="w-10 h-10 rounded-lg bg-cobalt/15 text-cobalt dark:text-cobalt-light flex flex-col items-center justify-center shrink-0">
+        <FileText className="w-5 h-5 stroke-[1.5]" />
+        <span className="text-[8px] font-mono font-bold tracking-wider">
           {getExtension(attachment.fileName)}
         </span>
       </div>
 
       {/* File Details */}
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-[#111b21] dark:text-[#e9edef] truncate">
+        <p className="text-xs font-medium text-ink dark:text-paperdark truncate">
           {attachment.fileName || 'Document.pdf'}
         </p>
-        <p className="text-xs text-[#667781] dark:text-[#8696a0] font-mono mt-0.5">
+        <p className="text-[10px] text-slate dark:text-slatedark font-mono mt-0.5">
           {attachment.fileSize || '2.4 MB'}
           {attachment.pageCount ? ` · ${attachment.pageCount} pages` : ''}
         </p>
@@ -53,10 +46,10 @@ export const DocumentMessage: React.FC<DocumentMessageProps> = ({ attachment }) 
       {/* Download Action */}
       <button
         onClick={handleDownload}
-        className="p-2 rounded-full hover:bg-black/10 dark:hover:bg-white/10 text-[#54656f] dark:text-[#aebac1] hover:text-wa-green transition-colors shrink-0"
+        className="btn-icon w-8 h-8 shrink-0 hover:border-cobalt hover:text-cobalt transition-colors"
         title="Download Document"
       >
-        <Download className="w-5 h-5" />
+        <Download className="w-3.5 h-3.5" />
       </button>
     </div>
   );

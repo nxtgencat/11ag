@@ -6,18 +6,8 @@ interface ModalProps {
   onClose: () => void;
   title?: string;
   children: React.ReactNode;
-  maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full';
-  showCloseButton?: boolean;
+  maxWidth?: 'sm' | 'md' | 'lg' | 'xl';
 }
-
-const maxWidthClasses = {
-  sm: 'max-w-sm',
-  md: 'max-w-md',
-  lg: 'max-w-lg',
-  xl: 'max-w-xl',
-  '2xl': 'max-w-2xl',
-  full: 'max-w-4xl',
-};
 
 export const Modal: React.FC<ModalProps> = ({
   isOpen,
@@ -25,51 +15,53 @@ export const Modal: React.FC<ModalProps> = ({
   title,
   children,
   maxWidth = 'md',
-  showCloseButton = true,
 }) => {
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
-
     if (isOpen) {
+      document.addEventListener('keydown', handleEscape);
       document.body.style.overflow = 'hidden';
-      window.addEventListener('keydown', handleKeyDown);
     }
     return () => {
+      document.removeEventListener('keydown', handleEscape);
       document.body.style.overflow = 'unset';
-      window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity animate-fade-in"
-        onClick={onClose}
-      />
+  const maxWidthClasses = {
+    sm: 'max-w-sm',
+    md: 'max-w-md',
+    lg: 'max-w-lg',
+    xl: 'max-w-xl',
+  };
 
-      {/* Modal Dialog */}
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/60 dark:bg-black/80 backdrop-blur-xs animate-fade-in">
       <div
-        className={`relative z-10 w-full ${maxWidthClasses[maxWidth]} rounded-2xl bg-white dark:bg-[#202c33] shadow-wa-modal text-[#111b21] dark:text-[#e9edef] overflow-hidden animate-pop-in border border-[#e9edef] dark:border-[#2a3942]`}
+        className={`w-full ${maxWidthClasses[maxWidth]} card p-0 overflow-hidden shadow-2xl animate-pop-in relative`}
       >
+        {/* Header */}
         {title && (
-          <div className="flex items-center justify-between px-6 py-4 border-b border-[#e9edef] dark:border-[#2a3942]">
-            <h3 className="text-lg font-semibold">{title}</h3>
-            {showCloseButton && (
-              <button
-                onClick={onClose}
-                className="p-1 rounded-full text-[#54656f] dark:text-[#aebac1] hover:bg-[#f0f2f5] dark:hover:bg-[#111b21] transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            )}
+          <div className="flex items-center justify-between p-4 border-b border-line dark:border-linedark bg-paper/85 dark:bg-inkdark/85 backdrop-blur-md">
+            <h3 className="font-display font-semibold text-sm text-ink dark:text-paperdark tracking-tight">
+              {title}
+            </h3>
+            <button
+              onClick={onClose}
+              className="btn-icon w-7 h-7"
+              title="Close modal"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
           </div>
         )}
-        <div className="p-6">{children}</div>
+
+        {/* Content Body */}
+        <div className="p-5">{children}</div>
       </div>
     </div>
   );

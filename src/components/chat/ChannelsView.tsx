@@ -9,69 +9,120 @@ export const ChannelsView: React.FC = () => {
       id: '1',
       name: 'WhatsApp Official',
       avatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150&auto=format&fit=crop&q=80',
-      followers: '142M followers',
-      desc: 'Get the latest updates, feature announcements and tips directly from the team.',
+      followers: '154.2M followers',
+      description: 'The official channel for product updates, security tips, and announcements.',
+      verified: true,
+      lastPost: 'Explore our latest Tearline component integration with seamless desktop & mobile experiences.',
+      time: '2h ago',
     },
     {
       id: '2',
-      name: 'TechCrunch',
-      avatar: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=150&auto=format&fit=crop&q=80',
-      followers: '8.4M followers',
-      desc: 'Breaking tech news, startup analysis, and Silicon Valley updates.',
+      name: 'Tech & Architecture Daily',
+      avatar: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=150&auto=format&fit=crop&q=80',
+      followers: '28.4M followers',
+      description: 'Curated engineering articles, system designs, and frontend deep-dives.',
+      verified: true,
+      lastPost: 'Why modular state architectures outperform monolith providers in React 18 apps.',
+      time: '5h ago',
     },
     {
       id: '3',
-      name: 'National Geographic',
-      avatar: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=150&auto=format&fit=crop&q=80',
-      followers: '19.2M followers',
-      desc: 'Inspiring people to care about the planet through science and exploration.',
+      name: 'Design Digest',
+      avatar: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=150&auto=format&fit=crop&q=80',
+      followers: '9.8M followers',
+      description: 'UI/UX inspiration, typography pairings, and interaction design patterns.',
+      verified: true,
+      lastPost: 'Space Grotesk + IBM Plex Mono: The definitive industrial aesthetic pairing.',
+      time: 'Yesterday',
     },
   ];
 
   const toggleFollow = (id: string) => {
     setFollowing((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
     );
   };
 
   return (
-    <div className="flex flex-col h-full bg-white dark:bg-[#111b21] border-r border-[#e9edef] dark:border-[#222d34] overflow-y-auto select-none">
-      <div className="p-4 border-b border-[#f0f2f5] dark:border-[#202c33] bg-[#f0f2f5] dark:bg-[#202c33]">
-        <h2 className="font-bold text-lg text-[#111b21] dark:text-[#e9edef]">Channels</h2>
-        <p className="text-xs text-[#8696a0] mt-0.5">Stay updated on topics you care about</p>
+    <div className="flex flex-col h-full bg-paper dark:bg-inkdark border-r border-line dark:border-linedark overflow-y-auto select-none transition-colors">
+      {/* Header */}
+      <div className="p-4 border-b border-line dark:border-linedark bg-paper/85 dark:bg-inkdark/85 backdrop-blur-md sticky top-0 z-10">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <h2 className="font-display font-semibold text-lg text-ink dark:text-paperdark tracking-tight">
+              Channels
+            </h2>
+            <span className="ticket-tag text-[9px] py-0 px-2 font-mono">FEED</span>
+          </div>
+        </div>
       </div>
 
-      <div className="p-3 divide-y divide-[#f0f2f5] dark:divide-[#202c33]">
-        {channels.map((channel) => {
-          const isFollowed = following.includes(channel.id);
-          return (
-            <div key={channel.id} className="py-3 px-2 flex items-start gap-3">
-              <img src={channel.avatar} alt={channel.name} className="w-12 h-12 rounded-full object-cover shrink-0" />
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-1">
-                  <h4 className="text-sm font-semibold text-[#111b21] dark:text-[#e9edef] truncate">
-                    {channel.name}
-                  </h4>
-                  <BadgeCheck className="w-4 h-4 text-wa-green fill-wa-green/20 shrink-0" />
-                </div>
-                <p className="text-[11px] text-[#8696a0]">{channel.followers}</p>
-                <p className="text-xs text-[#667781] dark:text-[#8696a0] mt-1 line-clamp-2">
-                  {channel.desc}
-                </p>
-              </div>
-              <button
-                onClick={() => toggleFollow(channel.id)}
-                className={`px-3 py-1.5 rounded-full text-xs font-semibold shrink-0 transition-colors ${
-                  isFollowed
-                    ? 'bg-wa-green/15 text-wa-green-deep dark:text-wa-green'
-                    : 'bg-wa-green-deep text-white hover:bg-wa-green-teal'
-                }`}
+      <div className="p-4 space-y-4">
+        <div className="flex items-center justify-between px-1">
+          <span className="mini-tag">DISCOVER BROADCASTS</span>
+          <span className="font-mono text-[10px] text-slate dark:text-slatedark">{channels.length} channels</span>
+        </div>
+
+        <div className="space-y-3">
+          {channels.map((channel) => {
+            const isFollowed = following.includes(channel.id);
+            return (
+              <div
+                key={channel.id}
+                className="card p-4 space-y-3 hover:border-cobalt transition-all"
               >
-                {isFollowed ? 'Following' : 'Follow'}
-              </button>
-            </div>
-          );
-        })}
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={channel.avatar}
+                      alt={channel.name}
+                      className="w-10 h-10 rounded-xl object-cover"
+                    />
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <h4 className="font-display font-semibold text-xs text-ink dark:text-paperdark">
+                          {channel.name}
+                        </h4>
+                        {channel.verified && (
+                          <BadgeCheck className="w-3.5 h-3.5 fill-cobalt text-white" />
+                        )}
+                      </div>
+                      <p className="font-mono text-[10px] text-slate dark:text-slatedark mt-0.5">
+                        {channel.followers}
+                      </p>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => toggleFollow(channel.id)}
+                    className={`text-xs px-3 py-1 rounded-full font-medium transition-all ${
+                      isFollowed
+                        ? 'border border-line dark:border-linedark text-slate dark:text-slatedark'
+                        : 'bg-cobalt text-white hover:bg-cobalt-dark shadow-xs'
+                    }`}
+                  >
+                    {isFollowed ? 'Following' : 'Follow'}
+                  </button>
+                </div>
+
+                <p className="text-xs text-slate dark:text-slatedark leading-relaxed">
+                  {channel.description}
+                </p>
+
+                {/* Latest Broadcast Message */}
+                <div className="p-2.5 rounded-lg bg-paper dark:bg-inkdark border border-line dark:border-linedark space-y-1">
+                  <div className="flex items-center justify-between text-[10px] font-mono text-slate">
+                    <span className="text-cobalt dark:text-cobalt-light font-semibold">LATEST UPDATE</span>
+                    <span>{channel.time}</span>
+                  </div>
+                  <p className="text-xs text-ink dark:text-paperdark">
+                    {channel.lastPost}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

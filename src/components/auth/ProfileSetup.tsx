@@ -1,209 +1,151 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { Camera, Smile, ArrowRight, Check } from 'lucide-react';
-import { EmojiPicker } from '../common/EmojiPicker';
+import { Camera, Check, Ticket } from 'lucide-react';
 
-const AVATAR_PRESETS = [
-  'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+const PRESET_AVATARS = [
   'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
   'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
 ];
 
 const STATUS_PRESETS = [
   'Available',
   'Busy',
-  'At work 💼',
-  'In a meeting 📅',
-  'At the gym 🏋️‍♂️',
-  'Battery about to die 🪫',
-  'Urgent calls only 📞',
-  'Sleeping 😴',
+  'At work',
+  'In a meeting',
+  'Battery about to die',
+  'Building products 🚀',
 ];
 
 export const ProfileSetup: React.FC = () => {
   const { completeProfileSetup } = useAuth();
-  const [name, setName] = useState('Alex Morgan');
-  const [about, setAbout] = useState('Hey there! I am using WhatsApp.');
-  const [selectedAvatar, setSelectedAvatar] = useState(AVATAR_PRESETS[0]);
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [showPresetModal, setShowPresetModal] = useState(false);
+  const [name, setName] = useState('');
+  const [about, setAbout] = useState('Available');
+  const [avatar, setAvatar] = useState(PRESET_AVATARS[0]);
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    completeProfileSetup(name, about, selectedAvatar);
-  };
-
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        if (typeof reader.result === 'string') {
-          setSelectedAvatar(reader.result);
-        }
-      };
-      reader.readAsDataURL(file);
+    if (!name.trim()) {
+      setError('Please provide a profile name');
+      return;
     }
+    setError('');
+    setIsLoading(true);
+    completeProfileSetup(name, about, avatar);
+    setIsLoading(false);
   };
 
   return (
-    <div className="w-full max-w-md bg-white dark:bg-[#111b21] rounded-2xl shadow-wa-modal border border-[#e9edef] dark:border-[#222d34] p-8 text-center animate-pop-in">
-      <span className="text-xs font-semibold text-wa-green uppercase tracking-wider block mb-2">
-        Step 3 of 3
-      </span>
-      <h2 className="text-2xl font-bold text-[#111b21] dark:text-[#e9edef] mb-2">
-        Profile Info
-      </h2>
-      <p className="text-xs sm:text-sm text-[#667781] dark:text-[#8696a0] mb-6">
-        Please provide your name and an optional profile photo.
-      </p>
-
-      {/* Avatar Picker with Camera Badge */}
-      <div className="relative w-28 h-28 mx-auto mb-6">
-        <img
-          src={selectedAvatar}
-          alt="Profile Preview"
-          className="w-full h-full rounded-full object-cover border-4 border-wa-green shadow-md"
-        />
-        <label className="absolute bottom-0 right-0 p-2 bg-wa-green-deep hover:bg-wa-green-teal text-white rounded-full cursor-pointer shadow-md transition-transform hover:scale-110">
-          <Camera className="w-5 h-5" />
-          <input
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleFileUpload}
-          />
-        </label>
-        <button
-          type="button"
-          onClick={() => setShowPresetModal(true)}
-          className="mt-2 text-xs text-wa-green hover:underline block mx-auto whitespace-nowrap"
-        >
-          Choose from presets
-        </button>
+    <div className="card shadow-lg p-6 sm:p-8 text-center animate-pop-in relative">
+      <div className="inline-flex items-center gap-1.5 ticket-tag text-[10px] py-0.5 px-2 mb-2 font-mono">
+        <Ticket className="w-3 h-3 text-cobalt" />
+        <span>PROFILE CREATION</span>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4 text-left">
-        {/* Name Input */}
-        <div>
-          <div className="flex items-center justify-between mb-1">
-            <label className="text-xs font-medium text-[#667781] dark:text-[#8696a0]">
-              Display Name
-            </label>
-            <span className="text-[10px] font-mono text-[#8696a0]">
-              {name.length}/25
+      <h2 className="font-display font-bold text-xl text-ink dark:text-paperdark tracking-tight">
+        Complete Your Profile
+      </h2>
+      <p className="text-xs text-slate dark:text-slatedark mt-1 max-w-xs mx-auto">
+        Choose your display photo, name, and status.
+      </p>
+
+      {error && (
+        <div className="mt-4 p-2.5 rounded-lg bg-rose/10 border border-rose/20 text-rose text-xs font-medium animate-pop-in">
+          {error}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="mt-6 space-y-5 text-left">
+        {/* Avatar Picker */}
+        <div className="flex flex-col items-center gap-3">
+          <div className="relative">
+            <img
+              src={avatar}
+              alt="Avatar preview"
+              className="w-20 h-20 rounded-2xl object-cover ring-2 ring-cobalt/40 shadow-sm"
+            />
+            <span className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-cobalt text-white flex items-center justify-center shadow-xs">
+              <Camera className="w-3.5 h-3.5" />
             </span>
           </div>
-          <div className="relative flex items-center bg-[#f0f2f5] dark:bg-[#202c33] border border-[#e9edef] dark:border-[#2a3942] rounded-xl px-3 py-2.5 focus-within:border-wa-green transition-all">
-            <input
-              type="text"
-              maxLength={25}
-              placeholder="Type your name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full bg-transparent text-sm text-[#111b21] dark:text-[#e9edef] outline-none pr-8"
-              required
-            />
-            <button
-              type="button"
-              onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-              className="text-[#667781] dark:text-[#8696a0] hover:text-[#111b21] dark:hover:text-white"
-            >
-              <Smile className="w-4 h-4" />
-            </button>
-          </div>
-          {showEmojiPicker && (
-            <div className="absolute z-50 mt-1">
-              <EmojiPicker
-                onSelectEmoji={(emoji) => {
-                  setName((prev) => (prev + emoji).slice(0, 25));
-                  setShowEmojiPicker(false);
-                }}
-              />
-            </div>
-          )}
-        </div>
 
-        {/* About / Status */}
-        <div>
-          <label className="block text-xs font-medium text-[#667781] dark:text-[#8696a0] mb-1">
-            About
-          </label>
-          <input
-            type="text"
-            placeholder="About you"
-            value={about}
-            onChange={(e) => setAbout(e.target.value)}
-            className="w-full px-3 py-2.5 bg-[#f0f2f5] dark:bg-[#202c33] border border-[#e9edef] dark:border-[#2a3942] rounded-xl text-sm text-[#111b21] dark:text-[#e9edef] outline-none focus:border-wa-green transition-all"
-          />
-
-          {/* Quick status chips */}
-          <div className="flex flex-wrap gap-1.5 mt-2">
-            {STATUS_PRESETS.slice(0, 4).map((status) => (
+          <div className="flex items-center gap-2">
+            {PRESET_AVATARS.map((url, i) => (
               <button
-                key={status}
+                key={i}
                 type="button"
-                onClick={() => setAbout(status)}
-                className={`text-[11px] px-2.5 py-1 rounded-full border transition-all ${
-                  about === status
-                    ? 'bg-wa-green/15 text-wa-green border-wa-green'
-                    : 'bg-[#f0f2f5] dark:bg-[#202c33] border-transparent text-[#667781] dark:text-[#8696a0] hover:border-[#8696a0]'
+                onClick={() => setAvatar(url)}
+                className={`w-8 h-8 rounded-full overflow-hidden border-2 transition-transform hover:scale-105 ${
+                  avatar === url ? 'border-cobalt ring-2 ring-cobalt/30' : 'border-transparent opacity-70'
                 }`}
               >
-                {status}
+                <img src={url} alt={`Preset ${i}`} className="w-full h-full object-cover" />
               </button>
             ))}
           </div>
         </div>
 
-        {/* Submit */}
-        <button
-          type="submit"
-          className="w-full mt-6 flex items-center justify-center gap-2 py-3 px-4 bg-wa-green-deep hover:bg-wa-green-teal text-white font-medium rounded-xl shadow-sm transition-all active:scale-[0.98]"
-        >
-          <span>Complete Setup</span>
-          <ArrowRight className="w-4 h-4" />
-        </button>
-      </form>
-
-      {/* Preset Avatars Modal */}
-      {showPresetModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
-          <div className="w-full max-w-xs bg-white dark:bg-[#202c33] rounded-2xl p-6 shadow-wa-modal border border-[#e9edef] dark:border-[#2a3942] text-center animate-pop-in">
-            <h3 className="font-semibold mb-4">Choose an avatar</h3>
-            <div className="grid grid-cols-3 gap-3 mb-6">
-              {AVATAR_PRESETS.map((preset, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => {
-                    setSelectedAvatar(preset);
-                    setShowPresetModal(false);
-                  }}
-                  className={`relative rounded-full overflow-hidden aspect-square border-2 transition-transform hover:scale-105 ${
-                    selectedAvatar === preset ? 'border-wa-green ring-2 ring-wa-green/40' : 'border-transparent'
-                  }`}
-                >
-                  <img src={preset} alt={`Avatar ${idx + 1}`} className="w-full h-full object-cover" />
-                  {selectedAvatar === preset && (
-                    <div className="absolute inset-0 bg-wa-green/40 flex items-center justify-center text-white">
-                      <Check className="w-5 h-5" />
-                    </div>
-                  )}
-                </button>
-              ))}
-            </div>
-            <button
-              onClick={() => setShowPresetModal(false)}
-              className="text-xs text-[#8696a0] hover:text-[#111b21] dark:hover:text-white"
-            >
-              Cancel
-            </button>
+        {/* Display Name Input */}
+        <div>
+          <label className="mini-tag block mb-1">YOUR NAME</label>
+          <input
+            type="text"
+            placeholder="Type your name…"
+            value={name}
+            maxLength={25}
+            onChange={(e) => setName(e.target.value)}
+            className="field py-2 text-sm"
+            autoFocus
+          />
+          <div className="flex justify-end mt-1 text-[10px] font-mono text-slate">
+            <span>{name.length}/25</span>
           </div>
         </div>
-      )}
+
+        {/* About Status */}
+        <div>
+          <label className="mini-tag block mb-1">ABOUT / STATUS</label>
+          <input
+            type="text"
+            placeholder="What's your status?"
+            value={about}
+            onChange={(e) => setAbout(e.target.value)}
+            className="field py-2 text-sm mb-2"
+          />
+
+          {/* Quick preset chips */}
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            {STATUS_PRESETS.map((preset) => (
+              <button
+                key={preset}
+                type="button"
+                onClick={() => setAbout(preset)}
+                className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all ${
+                  about === preset
+                    ? 'bg-ink dark:bg-paperdark text-paper dark:text-inkdark'
+                    : 'border border-line dark:border-linedark text-slate hover:border-ink dark:hover:border-paperdark'
+                }`}
+              >
+                {preset}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Submit Button */}
+        <button
+          type="submit"
+          disabled={isLoading || !name.trim()}
+          className="btn-primary w-full py-2.5 text-sm font-semibold flex items-center justify-center gap-2 mt-6 disabled:opacity-50"
+        >
+          <span>Launch Messenger</span>
+          <Check className="w-4 h-4" />
+        </button>
+      </form>
     </div>
   );
 };
