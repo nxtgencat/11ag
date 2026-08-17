@@ -20,188 +20,165 @@ export const ContactInfoDrawer: React.FC<ContactInfoDrawerProps> = ({
   contact,
   messages,
 }) => {
-  const { muteChat, blockContact, clearChat, deleteChat } = useChat();
+  const { muteChat, clearChat, blockContact } = useChat();
   const { startCall } = useCall();
   const [showStarredModal, setShowStarredModal] = useState(false);
-  const [disappearingVal, setDisappearingVal] = useState<'off' | '24h' | '7d' | '90d'>(contact.disappearingMessages || 'off');
+  const [disappearingOption, setDisappearingOption] = useState<'off' | '24h' | '7d' | '90d'>('off');
 
   if (!isOpen) return null;
 
-  const starredMessages = messages.filter((m) => m.isStarred);
-
   return (
-    <div className="fixed inset-y-0 right-0 z-40 w-full sm:w-96 md:w-96 bg-white dark:bg-[#111b21] border-l border-[#e9edef] dark:border-[#222d34] shadow-2xl flex flex-col animate-slide-up sm:animate-fade-in select-none">
+    <div className="w-full md:w-80 lg:w-96 h-full bg-paper dark:bg-inkdark border-l border-line dark:border-linedark flex flex-col z-30 shrink-0 overflow-y-auto animate-slide-down md:animate-none select-none transition-colors">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 bg-[#f0f2f5] dark:bg-[#202c33] border-b border-[#e9edef] dark:border-[#222d34] shrink-0">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={onClose}
-            className="p-1 rounded-full text-[#54656f] dark:text-[#aebac1] hover:bg-black/5 dark:hover:bg-white/5"
-          >
-            <X className="w-5 h-5" />
-          </button>
-          <h3 className="font-semibold text-sm text-[#111b21] dark:text-[#e9edef]">Contact Info</h3>
+      <div className="flex items-center justify-between px-4 py-3 border-b border-line dark:border-linedark bg-paper/85 dark:bg-inkdark/85 backdrop-blur-md sticky top-0 z-10">
+        <div className="flex items-center gap-2">
+          <span className="font-display font-semibold text-sm text-ink dark:text-paperdark">
+            Contact Details
+          </span>
         </div>
+        <button
+          onClick={onClose}
+          className="btn-icon w-8 h-8"
+          title="Close details"
+        >
+          <X className="w-4 h-4" />
+        </button>
       </div>
 
-      {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto divide-y-8 divide-[#f0f2f5] dark:divide-[#0c1317]">
+      <div className="p-4 space-y-4 flex-1">
         {/* Profile Card */}
-        <div className="p-6 flex flex-col items-center text-center bg-white dark:bg-[#111b21]">
-          <Avatar
-            src={contact.avatar}
-            name={contact.name}
-            size="2xl"
-            isOnline={contact.isOnline}
-            isGroup={contact.isGroup}
-            className="mb-4 shadow-md"
-          />
-          <h2 className="text-lg font-bold text-[#111b21] dark:text-[#e9edef]">
+        <div className="card text-center flex flex-col items-center">
+          <div className="relative mb-3">
+            <Avatar
+              src={contact.avatar}
+              name={contact.name}
+              size="xl"
+              isGroup={contact.isGroup}
+            />
+          </div>
+
+          <h3 className="font-display font-bold text-base text-ink dark:text-paperdark">
             {contact.name}
-          </h2>
-          <p className="text-xs text-[#667781] dark:text-[#8696a0] font-mono mt-0.5">
+          </h3>
+
+          <p className="font-mono text-xs text-slate dark:text-slatedark mt-0.5">
             {contact.phone}
           </p>
 
-          {/* Quick Call Actions */}
-          <div className="flex items-center gap-6 mt-5">
+          <div className="mt-4 flex items-center justify-center gap-2 w-full">
             <button
               onClick={() => startCall(contact, 'voice')}
-              className="flex flex-col items-center gap-1 text-wa-green-deep dark:text-wa-green hover:opacity-80 transition-opacity"
+              className="flex-1 py-2 px-3 rounded-full border border-line dark:border-linedark text-xs font-medium flex items-center justify-center gap-1.5 hover:border-ink dark:hover:border-paperdark transition-all"
             >
-              <div className="w-10 h-10 rounded-full bg-wa-green/15 flex items-center justify-center">
-                <Phone className="w-5 h-5" />
-              </div>
-              <span className="text-[11px] font-medium">Audio</span>
+              <Phone className="w-3.5 h-3.5" />
+              <span>Voice</span>
             </button>
             <button
               onClick={() => startCall(contact, 'video')}
-              className="flex flex-col items-center gap-1 text-wa-green-deep dark:text-wa-green hover:opacity-80 transition-opacity"
+              className="flex-1 py-2 px-3 rounded-full bg-cobalt text-white text-xs font-medium flex items-center justify-center gap-1.5 hover:bg-cobalt-dark transition-all shadow-xs"
             >
-              <div className="w-10 h-10 rounded-full bg-wa-green/15 flex items-center justify-center">
-                <Video className="w-5 h-5" />
-              </div>
-              <span className="text-[11px] font-medium">Video</span>
+              <Video className="w-3.5 h-3.5" />
+              <span>Video</span>
             </button>
           </div>
         </div>
 
-        {/* About Section */}
-        <div className="p-4 bg-white dark:bg-[#111b21]">
-          <span className="text-xs font-semibold text-[#8696a0] uppercase tracking-wider block mb-1">
-            About
-          </span>
-          <p className="text-sm text-[#111b21] dark:text-[#e9edef] leading-relaxed">
-            {contact.about}
+        {/* About Card */}
+        <div className="card space-y-1">
+          <span className="mini-tag">ABOUT / STATUS</span>
+          <p className="text-xs text-ink dark:text-paperdark font-medium leading-relaxed">
+            {contact.about || 'Available'}
           </p>
         </div>
 
-        {/* Media, Links & Docs Browser */}
-        <div className="p-4 bg-white dark:bg-[#111b21]">
-          <span className="text-xs font-semibold text-[#8696a0] uppercase tracking-wider block mb-2">
-            Media, Links and Docs
-          </span>
+        {/* Media, Links & Docs Card */}
+        <div className="card p-4 space-y-3">
           <SharedMediaTab messages={messages} />
         </div>
 
-        {/* Starred Messages Section */}
-        <div className="p-2 bg-white dark:bg-[#111b21]">
+        {/* Options & Settings Card */}
+        <div className="card p-2 divide-y divide-line/60 dark:divide-linedark/60">
+          {/* Starred Messages */}
           <button
             onClick={() => setShowStarredModal(true)}
-            className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-[#f5f6f6] dark:hover:bg-[#202c33] transition-colors"
+            className="w-full flex items-center justify-between p-3 hover:bg-ink/5 dark:hover:bg-white/5 rounded-lg transition-colors text-left"
           >
-            <div className="flex items-center gap-3 text-[#111b21] dark:text-[#e9edef]">
-              <Star className="w-5 h-5 text-amber-400 fill-amber-400" />
-              <span className="text-sm font-medium">Starred Messages</span>
+            <div className="flex items-center gap-3">
+              <Star className="w-4 h-4 text-amber" />
+              <span className="text-xs font-medium text-ink dark:text-paperdark">Starred Messages</span>
             </div>
-            <span className="text-xs font-semibold text-wa-green">
-              {starredMessages.length}
-            </span>
+            <span className="mini-tag font-mono">BROWSE</span>
           </button>
-        </div>
 
-        {/* Notification & Disappearing Settings */}
-        <div className="p-2 bg-white dark:bg-[#111b21] space-y-1">
-          {/* Mute toggle */}
+          {/* Mute */}
           <button
             onClick={() => muteChat(contact.id)}
-            className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-[#f5f6f6] dark:hover:bg-[#202c33] transition-colors text-left"
+            className="w-full flex items-center justify-between p-3 hover:bg-ink/5 dark:hover:bg-white/5 rounded-lg transition-colors text-left"
           >
-            <div className="flex items-center gap-3 text-[#111b21] dark:text-[#e9edef]">
-              {contact.isMuted ? <BellOff className="w-5 h-5 text-[#8696a0]" /> : <Bell className="w-5 h-5 text-[#8696a0]" />}
-              <span className="text-sm font-medium">Mute notifications</span>
+            <div className="flex items-center gap-3">
+              {contact.isMuted ? (
+                <BellOff className="w-4 h-4 text-rose" />
+              ) : (
+                <Bell className="w-4 h-4 text-slate dark:text-slatedark" />
+              )}
+              <span className="text-xs font-medium text-ink dark:text-paperdark">
+                {contact.isMuted ? 'Muted' : 'Mute Notifications'}
+              </span>
             </div>
-            <span className="text-xs font-mono text-[#8696a0]">
-              {contact.isMuted ? contact.muteUntil || 'Always' : 'Off'}
-            </span>
+            <span className="mini-tag font-mono">{contact.isMuted ? 'MUTED' : 'OFF'}</span>
           </button>
 
-          {/* Disappearing messages */}
-          <div className="p-3">
-            <div className="flex items-center justify-between mb-2 text-[#111b21] dark:text-[#e9edef]">
+          {/* Disappearing Messages */}
+          <div className="p-3 space-y-2">
+            <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <Clock className="w-5 h-5 text-[#8696a0]" />
-                <span className="text-sm font-medium">Disappearing messages</span>
+                <Clock className="w-4 h-4 text-slate dark:text-slatedark" />
+                <span className="text-xs font-medium text-ink dark:text-paperdark">Disappearing Messages</span>
               </div>
-              <span className="text-xs text-[#8696a0] capitalize">{disappearingVal}</span>
+              <span className="ticket-tag text-[9px] py-0 px-1 font-mono uppercase">{disappearingOption}</span>
             </div>
-            <div className="grid grid-cols-4 gap-1.5 pt-1">
-              {(['off', '24h', '7d', '90d'] as const).map((val) => (
+            <div className="grid grid-cols-4 gap-1 pt-1">
+              {(['off', '24h', '7d', '90d'] as const).map((opt) => (
                 <button
-                  key={val}
-                  onClick={() => setDisappearingVal(val)}
-                  className={`py-1 text-xs rounded-lg border uppercase font-mono transition-colors ${
-                    disappearingVal === val
-                      ? 'bg-wa-green/15 text-wa-green border-wa-green font-bold'
-                      : 'border-[#e9edef] dark:border-[#2a3942] text-[#8696a0]'
+                  key={opt}
+                  onClick={() => setDisappearingOption(opt)}
+                  className={`py-1 rounded text-[10px] font-mono transition-all ${
+                    disappearingOption === opt
+                      ? 'bg-cobalt text-white font-bold'
+                      : 'bg-paper dark:bg-inkdark border border-line dark:border-linedark text-slate dark:text-slatedark'
                   }`}
                 >
-                  {val}
+                  {opt}
                 </button>
               ))}
             </div>
           </div>
 
           {/* Encryption Note */}
-          <div className="flex items-center gap-3 p-3 text-xs text-[#8696a0]">
-            <Lock className="w-5 h-5 shrink-0 text-wa-green" />
+          <div className="p-3 flex items-center gap-3">
+            <Lock className="w-4 h-4 text-mint" />
             <div>
-              <p className="font-semibold text-[#111b21] dark:text-[#e9edef]">Encryption</p>
-              <p className="text-[11px] leading-relaxed">Messages and calls are end-to-end encrypted. Tap to verify.</p>
+              <p className="text-xs font-medium text-ink dark:text-paperdark">End-to-End Encryption</p>
+              <p className="text-[10px] text-slate dark:text-slatedark font-mono">Signal Protocol · Verified</p>
             </div>
           </div>
         </div>
 
-        {/* Danger Actions */}
-        <div className="p-2 bg-white dark:bg-[#111b21] space-y-1">
+        {/* Danger Actions Card */}
+        <div className="card p-2 space-y-1">
           <button
             onClick={() => blockContact(contact.id)}
-            className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-950/30 text-rose-500 text-sm font-medium transition-colors"
+            className="w-full flex items-center gap-3 p-3 text-xs font-medium text-rose hover:bg-rose/5 rounded-lg transition-colors text-left"
           >
-            <Ban className="w-5 h-5" />
+            <Ban className="w-4 h-4" />
             <span>{contact.isBlocked ? 'Unblock Contact' : 'Block Contact'}</span>
           </button>
-
           <button
-            onClick={() => {
-              clearChat(contact.id);
-              onClose();
-            }}
-            className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-950/30 text-rose-500 text-sm font-medium transition-colors"
+            onClick={() => clearChat(contact.id)}
+            className="w-full flex items-center gap-3 p-3 text-xs font-medium text-rose hover:bg-rose/5 rounded-lg transition-colors text-left"
           >
-            <Trash2 className="w-5 h-5" />
-            <span>Clear Chat</span>
-          </button>
-
-          <button
-            onClick={() => {
-              deleteChat(contact.id);
-              onClose();
-            }}
-            className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-950/30 text-rose-500 text-sm font-medium transition-colors"
-          >
-            <Trash2 className="w-5 h-5" />
-            <span>Delete Conversation</span>
+            <Trash2 className="w-4 h-4" />
+            <span>Clear Chat History</span>
           </button>
         </div>
       </div>
@@ -210,7 +187,6 @@ export const ContactInfoDrawer: React.FC<ContactInfoDrawerProps> = ({
       <StarredMessagesModal
         isOpen={showStarredModal}
         onClose={() => setShowStarredModal(false)}
-        starredMessages={starredMessages}
       />
     </div>
   );

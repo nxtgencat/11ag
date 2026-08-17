@@ -71,16 +71,16 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
 
   return (
     <>
-      <div className="flex items-center justify-between px-3 sm:px-4 py-2.5 bg-[#f0f2f5] dark:bg-[#202c33] border-b border-[#e9edef] dark:border-[#222d34] select-none z-20 shrink-0">
-        {/* Left: Back button (on mobile) + Avatar + Info */}
-        <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+      <div className="flex items-center justify-between px-4 sm:px-6 py-3 bg-paper/85 dark:bg-inkdark/85 backdrop-blur-md border-b border-line dark:border-linedark select-none z-20 shrink-0">
+        {/* Left: Avatar + Details */}
+        <div className="flex items-center gap-3 flex-1 min-w-0">
           {onBackToChatList && (
             <button
               onClick={onBackToChatList}
-              className="p-1.5 -ml-1 rounded-full text-[#54656f] dark:text-[#aebac1] hover:bg-black/5 dark:hover:bg-white/5 md:hidden"
+              className="btn-icon w-8 h-8 md:hidden -ml-1"
               title="Back to chats"
             >
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className="w-4 h-4" />
             </button>
           )}
 
@@ -97,14 +97,19 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
             />
 
             <div className="flex-1 min-w-0">
-              <h3 className="text-sm font-medium text-[#111b21] dark:text-[#e9edef] truncate">
-                {contact.name}
-              </h3>
-              <p className="text-xs text-[#667781] dark:text-[#8696a0] truncate">
+              <div className="flex items-center gap-2">
+                <h3 className="font-display font-semibold text-sm text-ink dark:text-paperdark tracking-tight truncate">
+                  {contact.name}
+                </h3>
+                {contact.isGroup && (
+                  <span className="ticket-tag text-[9px] py-0 px-1.5 font-mono">GROUP</span>
+                )}
+              </div>
+              <p className="text-[11px] text-slate dark:text-slatedark truncate font-mono">
                 {contact.isTyping ? (
-                  <span className="text-wa-green font-medium animate-pulse">typing...</span>
+                  <span className="text-mint font-medium animate-pulse">typing...</span>
                 ) : contact.isOnline ? (
-                  <span className="text-wa-green font-medium">online</span>
+                  <span className="text-mint font-medium">● online</span>
                 ) : (
                   contact.lastSeen || 'offline'
                 )}
@@ -113,41 +118,39 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
           </div>
         </div>
 
-        {/* Right: Video Call + Voice Call + Search + Dropdown */}
-        <div className="flex items-center gap-1 sm:gap-2 text-[#54656f] dark:text-[#aebac1]">
+        {/* Right: Actions */}
+        <div className="flex items-center gap-2 text-slate dark:text-slatedark">
           <button
             onClick={() => startCall(contact, 'video')}
-            className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 hover:text-[#111b21] dark:hover:text-white transition-colors"
+            className="btn-icon w-8 h-8"
             title="Video call"
           >
-            <Video className="w-5 h-5" />
+            <Video className="w-4 h-4" />
           </button>
 
           <button
             onClick={() => startCall(contact, 'voice')}
-            className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 hover:text-[#111b21] dark:hover:text-white transition-colors"
+            className="btn-icon w-8 h-8"
             title="Voice call"
           >
-            <Phone className="w-4 h-4" />
+            <Phone className="w-3.5 h-3.5" />
           </button>
-
-          <div className="h-4 w-px bg-[#e9edef] dark:bg-[#2a3942] mx-1 hidden sm:block" />
 
           <button
             onClick={onToggleSearch}
-            className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 hover:text-[#111b21] dark:hover:text-white transition-colors"
-            title="Search in chat"
+            className="btn-icon w-8 h-8"
+            title="Search in conversation"
           >
-            <Search className="w-4 h-4" />
+            <Search className="w-3.5 h-3.5" />
           </button>
 
           <div className="relative">
             <button
               onClick={() => setShowDropdown(!showDropdown)}
-              className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 hover:text-[#111b21] dark:hover:text-white transition-colors"
+              className="btn-icon w-8 h-8"
               title="More options"
             >
-              <MoreVertical className="w-4 h-4" />
+              <MoreVertical className="w-3.5 h-3.5" />
             </button>
 
             <Dropdown
@@ -161,14 +164,14 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
       </div>
 
       {/* Clear Chat Confirmation Modal */}
-      <Modal isOpen={showClearModal} onClose={() => setShowClearModal(false)} title="Clear this chat?" maxWidth="sm">
-        <p className="text-xs text-[#667781] dark:text-[#8696a0] mb-6 leading-relaxed">
-          Messages will only be removed from this device and this chat history.
+      <Modal isOpen={showClearModal} onClose={() => setShowClearModal(false)} title="Clear Conversation?" maxWidth="sm">
+        <p className="text-xs text-slate dark:text-slatedark mb-6 leading-relaxed">
+          Messages will be cleared from this conversation. This action cannot be undone.
         </p>
         <div className="flex justify-end gap-2">
           <button
             onClick={() => setShowClearModal(false)}
-            className="px-4 py-2 text-xs text-[#8696a0]"
+            className="btn-ghost py-1.5 px-3 text-xs"
           >
             Cancel
           </button>
@@ -177,7 +180,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
               clearChat(contact.id);
               setShowClearModal(false);
             }}
-            className="px-5 py-2 bg-rose-500 hover:bg-rose-600 text-white text-xs font-semibold rounded-xl"
+            className="px-4 py-1.5 rounded-full bg-rose text-white text-xs font-medium hover:opacity-90"
           >
             Clear Messages
           </button>
@@ -186,15 +189,15 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
 
       {/* Block Contact Modal */}
       <Modal isOpen={showBlockModal} onClose={() => setShowBlockModal(false)} title={contact.isBlocked ? "Unblock contact?" : "Block contact?"} maxWidth="sm">
-        <p className="text-xs text-[#667781] dark:text-[#8696a0] mb-6 leading-relaxed">
+        <p className="text-xs text-slate dark:text-slatedark mb-6 leading-relaxed">
           {contact.isBlocked
-            ? 'Unblocked contacts will be able to call you and send you messages.'
-            : 'Blocked contacts will no longer be able to call you or send you messages.'}
+            ? 'Unblocked contacts will be able to send you messages and initiate calls.'
+            : 'Blocked contacts will no longer be able to message or call you.'}
         </p>
         <div className="flex justify-end gap-2">
           <button
             onClick={() => setShowBlockModal(false)}
-            className="px-4 py-2 text-xs text-[#8696a0]"
+            className="btn-ghost py-1.5 px-3 text-xs"
           >
             Cancel
           </button>
@@ -203,8 +206,8 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
               blockContact(contact.id);
               setShowBlockModal(false);
             }}
-            className={`px-5 py-2 text-white text-xs font-semibold rounded-xl ${
-              contact.isBlocked ? 'bg-wa-green-deep' : 'bg-rose-500 hover:bg-rose-600'
+            className={`px-4 py-1.5 rounded-full text-white text-xs font-medium ${
+              contact.isBlocked ? 'bg-cobalt' : 'bg-rose'
             }`}
           >
             {contact.isBlocked ? 'Unblock' : 'Block'}
@@ -212,23 +215,21 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
         </div>
       </Modal>
 
-      {/* Report Contact Modal */}
-      <Modal isOpen={showReportModal} onClose={() => setShowReportModal(false)} title="Report this contact?" maxWidth="sm">
-        <p className="text-xs text-[#667781] dark:text-[#8696a0] mb-6 leading-relaxed">
-          The last 5 messages from this contact will be forwarded to WhatsApp for spam analysis.
+      {/* Report Modal */}
+      <Modal isOpen={showReportModal} onClose={() => setShowReportModal(false)} title="Report Contact?" maxWidth="sm">
+        <p className="text-xs text-slate dark:text-slatedark mb-6 leading-relaxed">
+          The last 5 messages will be forwarded for moderation review.
         </p>
         <div className="flex justify-end gap-2">
           <button
             onClick={() => setShowReportModal(false)}
-            className="px-4 py-2 text-xs text-[#8696a0]"
+            className="btn-ghost py-1.5 px-3 text-xs"
           >
             Cancel
           </button>
           <button
-            onClick={() => {
-              setShowReportModal(false);
-            }}
-            className="px-5 py-2 bg-rose-500 hover:bg-rose-600 text-white text-xs font-semibold rounded-xl"
+            onClick={() => setShowReportModal(false)}
+            className="px-4 py-1.5 rounded-full bg-rose text-white text-xs font-medium"
           >
             Report & Block
           </button>

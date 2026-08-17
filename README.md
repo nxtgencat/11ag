@@ -1,6 +1,6 @@
-# 💬 WhatsApp Clone (React + TypeScript + Tailwind CSS)
+# 💬 WhatsApp Clone — Tearline Design System Edition
 
-A responsive, feature-complete WhatsApp Web and Mobile chat interface built with **React**, **Vite**, **TypeScript**, and **Tailwind CSS**.
+A responsive, feature-complete WhatsApp Web and Mobile chat interface crafted using the **Tearline Design System** with **React**, **Vite**, **TypeScript**, and **Tailwind CSS**.
 
 ---
 
@@ -8,20 +8,30 @@ A responsive, feature-complete WhatsApp Web and Mobile chat interface built with
 
 | Question | Explanation |
 | :--- | :--- |
-| **What is it?** | A frontend clone of WhatsApp Web and Mobile with authentic layouts, 50+ populated contacts, multi-media chat, voice notes with waveforms, real file attachments, simulated audio/video calls, and dark/light themes. |
-| **Why?** | To demonstrate a scalable, production-grade frontend messaging architecture with clean state management, modular components, responsive design, and fluid UX interactions without requiring an immediate backend. |
-| **How does it work?** | Built using React Contexts (`AuthContext`, `ChatContext`, `CallContext`, `ThemeContext`) for real-time reactivity and local persistence, styled with Tailwind utility classes, and optimized with Vite bundler. |
+| **What is it?** | A frontend clone of WhatsApp Web and Mobile faithfully adopting the **Tearline Design System** (`design/tearline/index.html`): Space Grotesk headings, IBM Plex Mono timestamps & tags, Inter body typography, Cobalt & Paper color palettes, ticket tags, perforated dividers, and a global `⌘K` command palette. |
+| **Why?** | To demonstrate a production-grade frontend messaging architecture matching the exact aesthetic, tokens, and micro-interactions of the Tearline component library. |
+| **How does it work?** | Built using React Contexts (`AuthContext`, `ChatContext`, `CallContext`, `ThemeContext`) for real-time reactivity and local persistence, styled with Tailwind utility classes, and bundled with Vite. |
 
 ---
 
-## 🛠️ Tech Stack
+## 🎨 Tearline Design Tokens & Foundations
 
-- **Framework**: React 18 + TypeScript
-- **Build Tool**: Vite (Lightning-fast HMR)
-- **Styling**: Tailwind CSS (Authentic WhatsApp light & dark palettes + doodle wallpaper)
-- **Icons**: Lucide React + WhatsApp SVG icons
-- **Audio Engine**: Web Audio API (real-time message sounds & voice note waveforms)
-- **Package Manager**: `pnpm` exclusively
+- **Typography**:
+  - `Space Grotesk` (`font-display`): Specimen titles, contact names, modal headers, brand tile.
+  - `Inter` (`font-sans`): Clean body text, messages, composer inputs, list items.
+  - `IBM Plex Mono` (`font-mono`): Monospace timestamps, ticket tags, SKU badges, OTP digits.
+- **Color Palettes**:
+  - Light: `paper` (`#F6F5F1`), `surface` (`#FFFFFF`), `ink` (`#1B1D22`), `slate` (`#666B75`), `line` (`#E4E2DC`)
+  - Dark: `inkdark` (`#14161A`), `surfacedark` (`#1D2027`), `linedark` (`#2C2F37`), `slatedark` (`#9A9EA8`), `paperdark` (`#F1F0EC`)
+  - Accents: `cobalt` (`#2A4CDB`), `amber` (`#E8A33D`), `mint` (`#1F9D66`), `rose` (`#D64545`)
+- **Tearline Primitives**:
+  - `.ticket-tag`: Dashed ticket tags with icons and mono text.
+  - `.mini-tag`: Compact uppercase metadata labels.
+  - `.perf` & `.perf-notch`: Perforated dividers with circular punch notches.
+  - `.kbd`: Sleek keyboard shortcut badges (`⌘K`).
+  - `.btn-primary`, `.btn-secondary`, `.btn-outline`, `.btn-ghost`, `.btn-icon`.
+  - `.field`: Unified input container with Cobalt focus glow.
+  - `CommandPaletteModal`: Global `⌘K` / `Ctrl+K` command & search overlay.
 
 ---
 
@@ -47,13 +57,13 @@ whatsapp-clone/
     │
     ├── components/                     # Reusable UI Primitives
     │   ├── auth/                       # PhoneLogin, OtpVerification, ProfileSetup
-    │   ├── chat/                       # ChatList, ChatListItem, ChatHeader, ChatComposer
-    │   ├── messages/                   # MessageBubble, Text, Images, Videos, Voice, Docs, Locations
+    │   ├── chat/                       # ChatList, ChatListItem, ChatHeader, ChatComposer, EmptyChatState
+    │   ├── messages/                   # MessageBubble, Text, Images, Videos, Voice, Docs, Locations, DateSeparator
     │   ├── media/                      # AttachmentMenu, MediaViewer (Lightbox), VideoPlayer, Camera, LocationPicker
     │   ├── profile/                    # ContactInfoDrawer, SharedMediaTab, StarredMessages, SettingsModal
     │   ├── call/                       # VoiceCallModal, VideoCallModal
     │   ├── layout/                     # NavigationRail, Sidebar, ResponsiveContainer
-    │   └── common/                     # Avatar, Modal, Dropdown, EmojiPicker, Toast
+    │   └── common/                     # CommandPaletteModal (⌘K), Avatar, Modal, Dropdown, EmojiPicker, Toast
     │
     ├── data/                           # Mock Datasets
     │   ├── contacts.ts                 # 52 unique realistic contacts & groups
@@ -68,50 +78,14 @@ whatsapp-clone/
     │
     ├── utils/                          # Helper Functions
     │   ├── formatters.ts               # WhatsApp timestamps, file sizes, timer format
-    │   └── soundEffects.ts             # Web Audio API sound synthesis (pop, swoosh)
+    │   └── soundEffects.ts             # Web Audio API sound synthesis
     │
     ├── types/                          # TypeScript Interfaces
     │   └── index.ts                    # User, Contact, Message, Attachment, Call types
     │
-    ├── index.css                       # Custom WhatsApp scrollbars, tails & wallpapers
+    ├── index.css                       # Tearline custom scrollbars, tags, buttons & CSS layers
     └── main.tsx                        # DOM mount entry
 ```
-
----
-
-## ✨ Key Features for Meeting Demo
-
-1. **Authentication Flow**:
-   - Phone number input with country flag selector.
-   - 6-box auto-advancing OTP verification (with `123456` one-click autofill).
-   - Profile setup with customizable avatar, name, and status presets.
-
-2. **50+ Rich Conversations**:
-   - 52 realistic individual contacts and team groups.
-   - Pinned chats, Muted chats, and an Archived chats folder.
-   - Filter pills: **All**, **Unread**, **Favorites**, **Groups**.
-   - Instant search across contact names, phone numbers, bios, and message text.
-
-3. **Message Types & Real File Sending**:
-   - **Text** (with link detection and `*bold*`, `_italic_` formatting).
-   - **Real Photos & Videos** with preview modal, caption input, and clipboard paste (`Ctrl+V`).
-   - **Real Documents** (PDF, DOCX, XLSX, TXT) with filename, file size, and download.
-   - **Real Audio & Voice Notes** with green waveform scrubbing and speed controls (`1x / 1.5x / 2x`).
-   - **Locations** (Google Maps preview card) and **Shared Contacts**.
-
-4. **Message & Chat Actions**:
-   - Emoji reactions bar (`👍 ❤️ 😂 😮 😢 🙏 + Custom`).
-   - Quoted replies (click to scroll to original message).
-   - Star messages, forward to multiple contacts, and delete (*for me* vs *for everyone*).
-   - Pin, Mute, Archive, Clear Chat, Block Contact.
-
-5. **Simulated Voice & Video Calls**:
-   - Full-screen audio call overlay with pulsating sound waves.
-   - Full-screen video call with picture-in-picture local camera window.
-
-6. **Responsive Layout**:
-   - **Desktop/Tablet**: Split pane (Nav Rail + Chat List + Conversation + Sliding Contact Drawer).
-   - **Mobile**: Seamless single-page transitions (**Chat List → Fullscreen Chat → Back**).
 
 ---
 
@@ -129,3 +103,4 @@ pnpm run build
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
+Press **`⌘K`** or **`Ctrl+K`** to open the Tearline Command Palette.

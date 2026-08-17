@@ -13,15 +13,24 @@ html.dark {
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', 'Helvetica Neue', Helvetica, 'Lucida Grande', Arial, Ubuntu, Cantarell, 'Fira Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom WhatsApp Scrollbar */
+::selection {
+  background: #2A4CDB;
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid #2A4CDB;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Tearline Custom Scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 9px;
+  height: 9px;
 }
 
 ::-webkit-scrollbar-track {
@@ -29,53 +38,29 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(134, 150, 160, 0.35);
-  border-radius: 9999px;
+  background-color: #D8D6CE;
+  border-radius: 999px;
+  border: 2px solid #F6F5F1;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(134, 150, 160, 0.6);
+  background-color: #B9B6AB;
 }
 
-/* WhatsApp Doodle Wallpaper Pattern */
-.wa-wallpaper-doodle {
-  background-color: #efeae2;
-  background-image: radial-gradient(#d3c9be 1px, transparent 1px), radial-gradient(#d3c9be 1px, #efeae2 1px);
-  background-size: 40px 40px;
-  background-position: 0 0, 20px 20px;
+html.dark ::-webkit-scrollbar-thumb {
+  background-color: #33363E;
+  border-color: #14161A;
 }
 
-.dark .wa-wallpaper-doodle {
-  background-color: #0b141a;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), radial-gradient(rgba(255, 255, 255, 0.05) 1px, #0b141a 1px);
-  background-size: 40px 40px;
-  background-position: 0 0, 20px 20px;
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #D8D6CE transparent;
 }
 
-/* WhatsApp Tail on Message Bubbles */
-.bubble-outgoing::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: -8px;
-  width: 8px;
-  height: 13px;
-  background: inherit;
-  clip-path: polygon(0 0, 0% 100%, 100% 0);
+html.dark * {
+  scrollbar-color: #33363E transparent;
 }
 
-.bubble-incoming::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -8px;
-  width: 8px;
-  height: 13px;
-  background: inherit;
-  clip-path: polygon(100% 0, 0 0, 100% 100%);
-}
-
-/* Hide scrollbar utility */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
@@ -84,16 +69,150 @@ body {
   scrollbar-width: none;
 }
 
-/* Waveform pulse animation */
-@keyframes audioWave {
-  0%, 100% {
-    transform: scaleY(0.4);
+/* Tearline Perforated Divider */
+.perf {
+  position: relative;
+  height: 1px;
+}
+
+.perf::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(to right, #D8D6CE 50%, transparent 0%);
+  background-size: 10px 1px;
+  background-repeat: repeat-x;
+  background-position: center;
+}
+
+html.dark .perf::before {
+  background-image: linear-gradient(to right, #33363E 50%, transparent 0%);
+}
+
+.perf-notch {
+  position: absolute;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: #F6F5F1;
+  transform: translateY(-50%);
+}
+
+html.dark .perf-notch {
+  background: #14161A;
+}
+
+.perf-notch.left {
+  left: -8px;
+}
+
+.perf-notch.right {
+  right: -8px;
+}
+
+/* Tearline Tags & Badges */
+.ticket-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .08em;
+  padding: 3px 8px;
+  border: 1px dashed #C7C4B9;
+  border-radius: 4px;
+  color: #666B75;
+}
+
+html.dark .ticket-tag {
+  border-color: #3A3D46;
+  color: #9A9EA8;
+}
+
+.mini-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .08em;
+  color: #666B75;
+}
+
+html.dark .mini-tag {
+  color: #9A9EA8;
+}
+
+.kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  padding: 2px 6px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  border-radius: 5px;
+  background: #EDEBE4;
+  border-bottom: 2px solid #D8D6CE;
+  color: #4B4E56;
+}
+
+html.dark .kbd {
+  background: #262932;
+  border-bottom: 2px solid #383B44;
+  color: #C7C9D1;
+}
+
+.glass {
+  background: rgba(255, 255, 255, .7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, .6);
+}
+
+html.dark .glass {
+  background: rgba(29, 32, 39, .6);
+  border: 1px solid rgba(255, 255, 255, .08);
+}
+
+/* Tearline Reusable Component Classes */
+@layer components {
+  .btn-primary {
+    @apply px-5 py-2 rounded-full bg-cobalt text-white text-sm font-medium shadow-xs hover:bg-cobalt-dark hover:shadow-sm active:scale-[.96] transition-all;
   }
-  50% {
-    transform: scaleY(1);
+  .btn-secondary {
+    @apply px-5 py-2 rounded-full bg-ink dark:bg-paperdark text-paper dark:text-inkdark text-sm font-medium hover:opacity-90 active:scale-[.96] transition-all;
+  }
+  .btn-outline {
+    @apply px-4 py-2 rounded-full border border-line dark:border-linedark text-sm font-medium hover:border-ink dark:hover:border-paperdark active:scale-[.96] transition-all;
+  }
+  .btn-ghost {
+    @apply px-4 py-2 rounded-full text-sm font-medium text-slate dark:text-slatedark hover:bg-ink/5 dark:hover:bg-white/5 active:scale-[.96] transition-all;
+  }
+  .btn-icon {
+    @apply w-9 h-9 rounded-full border border-line dark:border-linedark grid place-content-center hover:border-ink dark:hover:border-paperdark transition-colors;
+  }
+  .field {
+    @apply w-full px-4 py-2 rounded-lg bg-surface dark:bg-surfacedark border border-line dark:border-linedark text-sm placeholder:text-slate/60 dark:placeholder:text-slatedark/60 focus:border-cobalt focus:shadow-glow outline-none transition-all;
+  }
+  .panel {
+    @apply absolute top-full left-0 mt-2 p-1.5 rounded-xl bg-surface dark:bg-surfacedark shadow-lg border border-line dark:border-linedark z-40;
+  }
+  .menu-item {
+    @apply w-full text-left px-2.5 py-1.5 rounded-md hover:bg-ink/5 dark:hover:bg-white/5 text-sm flex items-center gap-2;
+  }
+  .card {
+    @apply p-5 rounded-xl bg-surface dark:bg-surfacedark border border-line dark:border-linedark shadow-xs;
   }
 }
 
-.animate-wave-bar {
-  animation: audioWave 1.2s ease-in-out infinite;
+/* Chat Paper Pattern */
+.wa-wallpaper-doodle {
+  background-color: #F6F5F1;
+  background-image: radial-gradient(#E4E2DC 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.dark .wa-wallpaper-doodle {
+  background-color: #14161A;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
 }

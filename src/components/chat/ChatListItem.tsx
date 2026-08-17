@@ -63,7 +63,7 @@ export const ChatListItem: React.FC<ChatListItemProps> = ({
     const type = contact.lastMessage?.type;
     if (!type || type === 'text') return null;
 
-    const iconClass = "w-3.5 h-3.5 inline mr-1 text-[#8696a0]";
+    const iconClass = "w-3.5 h-3.5 inline mr-1 text-slate dark:text-slatedark";
     switch (type) {
       case 'image': return <ImageIcon className={iconClass} />;
       case 'video': return <Video className={iconClass} />;
@@ -81,22 +81,22 @@ export const ChatListItem: React.FC<ChatListItemProps> = ({
     const status = contact.lastMessage?.status;
 
     if (status === 'read') {
-      return <CheckCheck className="w-4 h-4 text-wa-blue inline mr-1 shrink-0" />;
+      return <CheckCheck className="w-3.5 h-3.5 text-cobalt dark:text-cobalt-light inline mr-1 shrink-0" />;
     }
     if (status === 'delivered') {
-      return <CheckCheck className="w-4 h-4 text-[#8696a0] inline mr-1 shrink-0" />;
+      return <CheckCheck className="w-3.5 h-3.5 text-slate dark:text-slatedark inline mr-1 shrink-0" />;
     }
-    return <Check className="w-4 h-4 text-[#8696a0] inline mr-1 shrink-0" />;
+    return <Check className="w-3.5 h-3.5 text-slate dark:text-slatedark inline mr-1 shrink-0" />;
   };
 
   return (
     <div
       onClick={onSelect}
       onContextMenu={handleContextMenu}
-      className={`group relative flex items-center gap-3 px-3.5 py-3 cursor-pointer transition-colors border-b border-[#f0f2f5] dark:border-[#202c33] ${
+      className={`group relative flex items-center gap-3 px-4 py-3 cursor-pointer transition-all ${
         isActive
-          ? 'bg-[#f0f2f5] dark:bg-[#2a3942]'
-          : 'bg-white dark:bg-[#111b21] hover:bg-[#f5f6f6] dark:hover:bg-[#202c33]'
+          ? 'bg-surface dark:bg-surfacedark shadow-xs border-l-3 border-cobalt'
+          : 'hover:bg-surface/60 dark:hover:bg-surfacedark/60'
       }`}
     >
       {/* Contact Avatar */}
@@ -110,15 +110,15 @@ export const ChatListItem: React.FC<ChatListItemProps> = ({
 
       {/* Details */}
       <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-between mb-1">
-          <h4 className="text-sm font-medium text-[#111b21] dark:text-[#e9edef] truncate">
+        <div className="flex items-center justify-between mb-0.5">
+          <h4 className="font-display font-medium text-xs text-ink dark:text-paperdark truncate">
             {contact.name}
           </h4>
           <span
-            className={`text-[11px] font-normal shrink-0 ml-2 ${
+            className={`font-mono text-[10px] shrink-0 ml-2 ${
               contact.unreadCount > 0
-                ? 'text-wa-green font-medium'
-                : 'text-[#667781] dark:text-[#8696a0]'
+                ? 'text-cobalt dark:text-cobalt-light font-bold'
+                : 'text-slate dark:text-slatedark'
             }`}
           >
             {contact.lastMessage?.timestamp || '10:45 AM'}
@@ -126,14 +126,14 @@ export const ChatListItem: React.FC<ChatListItemProps> = ({
         </div>
 
         <div className="flex items-center justify-between gap-1">
-          <div className="flex items-center text-xs text-[#667781] dark:text-[#8696a0] truncate pr-1">
+          <div className="flex items-center text-xs text-slate dark:text-slatedark truncate pr-1">
             {contact.isTyping ? (
-              <span className="text-wa-green font-medium animate-pulse">typing...</span>
+              <span className="text-mint font-medium animate-pulse font-mono text-[11px]">typing...</span>
             ) : (
               <>
                 {renderStatusTicks()}
                 {renderLastMessageTypeIcon()}
-                <span className="truncate">{contact.lastMessage?.text || contact.about}</span>
+                <span className="truncate text-xs">{contact.lastMessage?.text || contact.about}</span>
               </>
             )}
           </div>
@@ -141,24 +141,24 @@ export const ChatListItem: React.FC<ChatListItemProps> = ({
           {/* Badges & Icons */}
           <div className="flex items-center gap-1.5 shrink-0">
             {contact.isMuted && (
-              <span title="Muted"><VolumeX className="w-3.5 h-3.5 text-[#8696a0]" /></span>
+              <span title="Muted"><VolumeX className="w-3 h-3 text-slate dark:text-slatedark" /></span>
             )}
             {contact.isPinned && (
-              <span title="Pinned"><Pin className="w-3.5 h-3.5 text-[#8696a0] rotate-45" /></span>
+              <span title="Pinned"><Pin className="w-3 h-3 text-slate dark:text-slatedark rotate-45" /></span>
             )}
             {contact.unreadCount > 0 && (
-              <span className="min-w-5 h-5 px-1.5 rounded-full bg-wa-green text-white text-[11px] font-bold flex items-center justify-center shadow-xs">
+              <span className="min-w-4 h-4 px-1 rounded-full bg-cobalt text-white font-mono text-[9px] font-bold flex items-center justify-center shadow-xs">
                 {contact.unreadCount}
               </span>
             )}
             
-            {/* Quick dropdown trigger on hover */}
+            {/* 3-dots hover action */}
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 setDropdownPos({ isOpen: true });
               }}
-              className="opacity-0 group-hover:opacity-100 p-0.5 rounded text-[#8696a0] hover:text-[#111b21] dark:hover:text-white transition-opacity"
+              className="opacity-0 group-hover:opacity-100 p-0.5 rounded text-slate dark:text-slatedark hover:text-ink dark:hover:text-paperdark transition-opacity"
             >
               <MoreVertical className="w-3.5 h-3.5" />
             </button>

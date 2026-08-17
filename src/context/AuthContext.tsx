@@ -11,6 +11,7 @@ interface AuthContextType {
   loginWithPhone: (countryCode: string, phone: string) => Promise<boolean>;
   verifyOtp: (otp: string) => Promise<boolean>;
   completeProfileSetup: (name: string, about: string, avatar: string) => void;
+  updateProfile: (data: Partial<UserProfile>) => void;
   logout: () => void;
   resendOtp: () => void;
   resendCountdown: number;
@@ -101,6 +102,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setAuthStep('authenticated');
   };
 
+  const updateProfile = (data: Partial<UserProfile>) => {
+    setUser((prev) => (prev ? { ...prev, ...data } : null));
+  };
+
   const logout = () => {
     setUser(null);
     setAuthStep('phone');
@@ -121,6 +126,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         loginWithPhone,
         verifyOtp,
         completeProfileSetup,
+        updateProfile,
         logout,
         resendOtp,
         resendCountdown,

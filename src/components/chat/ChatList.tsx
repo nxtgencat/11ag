@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useChat } from '../../context/ChatContext';
 import { ChatListItem } from './ChatListItem';
-import { Search, X, Archive, Filter, MessageSquarePlus, ArrowLeft } from 'lucide-react';
+import { Search, X, Archive, Filter, Plus, ArrowLeft } from 'lucide-react';
 import { NewChatModal } from './NewChatModal';
 
 export const ChatList: React.FC = () => {
@@ -23,87 +23,100 @@ export const ChatList: React.FC = () => {
   const archivedCount = contacts.filter((c) => c.isArchived).length;
 
   return (
-    <div className="flex flex-col h-full bg-white dark:bg-[#111b21] border-r border-[#e9edef] dark:border-[#222d34] overflow-hidden select-none">
-      {/* Top Search & Filter Section */}
-      <div className="p-2.5 space-y-2 border-b border-[#f0f2f5] dark:border-[#202c33] shrink-0">
-        {/* Search Bar */}
-        <div className="flex items-center gap-2">
-          {activeTab === 'archived' && (
-            <button
-              onClick={() => setActiveTab('chats')}
-              className="p-1.5 rounded-full text-[#54656f] dark:text-[#aebac1] hover:bg-[#f0f2f5] dark:hover:bg-[#202c33] transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </button>
-          )}
-
-          <div className="relative flex-1 flex items-center bg-[#f0f2f5] dark:bg-[#202c33] rounded-xl px-3 py-1.5 focus-within:ring-1 focus-within:ring-wa-green transition-all">
-            <Search className="w-4 h-4 text-[#8696a0] mr-2.5 shrink-0" />
-            <input
-              type="text"
-              placeholder={activeTab === 'archived' ? 'Search archived chats' : 'Search or start new chat'}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-transparent text-sm text-[#111b21] dark:text-[#e9edef] placeholder-[#8696a0] outline-none"
-            />
-            {searchQuery && (
+    <div className="flex flex-col h-full bg-paper dark:bg-inkdark border-r border-line dark:border-linedark overflow-hidden select-none transition-colors">
+      {/* Top Header & Search */}
+      <div className="p-4 space-y-3 border-b border-line dark:border-linedark bg-paper/85 dark:bg-inkdark/85 backdrop-blur-md shrink-0">
+        {/* Title Bar */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            {activeTab === 'archived' && (
               <button
-                onClick={() => setSearchQuery('')}
-                className="p-0.5 text-[#8696a0] hover:text-[#111b21] dark:hover:text-white"
+                onClick={() => setActiveTab('chats')}
+                className="btn-icon w-8 h-8"
               >
-                <X className="w-4 h-4" />
+                <ArrowLeft className="w-4 h-4" />
               </button>
             )}
+            <h2 className="font-display font-semibold text-lg text-ink dark:text-paperdark tracking-tight">
+              {activeTab === 'archived' ? 'Archived' : 'Messages'}
+            </h2>
           </div>
 
-          <button
-            onClick={() => setIsNewChatModalOpen(true)}
-            className="p-2 rounded-xl text-wa-green-deep dark:text-wa-green bg-wa-green/10 hover:bg-wa-green/20 dark:bg-wa-green/15 dark:hover:bg-wa-green/25 transition-colors shrink-0"
-            title="New Chat"
-          >
-            <MessageSquarePlus className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-2">
+            <span className="ticket-tag text-[10px] py-0.5 px-2">
+              {contacts.length} THREADS
+            </span>
+            <button
+              onClick={() => setIsNewChatModalOpen(true)}
+              className="w-8 h-8 rounded-full bg-cobalt text-white grid place-content-center hover:bg-cobalt-dark transition-all active:scale-95 shadow-xs"
+              title="New Chat"
+            >
+              <Plus className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
-        {/* Filter Pills (All, Unread, Favorites, Groups) */}
+        {/* Search Field */}
+        <div className="relative flex items-center">
+          <input
+            type="text"
+            placeholder="Search conversations..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="field py-2 pl-9 pr-12 text-xs"
+          />
+          <Search className="w-3.5 h-3.5 text-slate dark:text-slatedark absolute left-3 pointer-events-none" />
+          {searchQuery ? (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute right-3 p-0.5 text-slate hover:text-ink dark:hover:text-paperdark"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          ) : (
+            <span className="kbd absolute right-2 text-[10px]">⌘K</span>
+          )}
+        </div>
+
+        {/* Filter Pills */}
         {activeTab === 'chats' && !searchQuery && (
-          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-0.5">
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-1">
             <button
               onClick={() => setActiveFilter('all')}
-              className={`px-3 py-1 text-xs font-medium rounded-full transition-all shrink-0 ${
+              className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
                 activeFilter === 'all'
-                  ? 'bg-wa-green-deep dark:bg-wa-green text-white dark:text-[#111b21] font-semibold'
-                  : 'bg-[#f0f2f5] dark:bg-[#202c33] text-[#54656f] dark:text-[#8696a0] hover:bg-[#e9edef] dark:hover:bg-[#2a3942]'
+                  ? 'bg-ink dark:bg-paperdark text-paper dark:text-inkdark'
+                  : 'border border-line dark:border-linedark text-slate dark:text-slatedark hover:border-ink dark:hover:border-paperdark'
               }`}
             >
               All
             </button>
             <button
               onClick={() => setActiveFilter('unread')}
-              className={`px-3 py-1 text-xs font-medium rounded-full transition-all shrink-0 ${
+              className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
                 activeFilter === 'unread'
-                  ? 'bg-wa-green-deep dark:bg-wa-green text-white dark:text-[#111b21] font-semibold'
-                  : 'bg-[#f0f2f5] dark:bg-[#202c33] text-[#54656f] dark:text-[#8696a0] hover:bg-[#e9edef] dark:hover:bg-[#2a3942]'
+                  ? 'bg-cobalt text-white'
+                  : 'border border-line dark:border-linedark text-slate dark:text-slatedark hover:border-ink dark:hover:border-paperdark'
               }`}
             >
               Unread
             </button>
             <button
               onClick={() => setActiveFilter('favorites')}
-              className={`px-3 py-1 text-xs font-medium rounded-full transition-all shrink-0 ${
+              className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
                 activeFilter === 'favorites'
-                  ? 'bg-wa-green-deep dark:bg-wa-green text-white dark:text-[#111b21] font-semibold'
-                  : 'bg-[#f0f2f5] dark:bg-[#202c33] text-[#54656f] dark:text-[#8696a0] hover:bg-[#e9edef] dark:hover:bg-[#2a3942]'
+                  ? 'bg-amber text-white'
+                  : 'border border-line dark:border-linedark text-slate dark:text-slatedark hover:border-ink dark:hover:border-paperdark'
               }`}
             >
               Favorites
             </button>
             <button
               onClick={() => setActiveFilter('groups')}
-              className={`px-3 py-1 text-xs font-medium rounded-full transition-all shrink-0 ${
+              className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
                 activeFilter === 'groups'
-                  ? 'bg-wa-green-deep dark:bg-wa-green text-white dark:text-[#111b21] font-semibold'
-                  : 'bg-[#f0f2f5] dark:bg-[#202c33] text-[#54656f] dark:text-[#8696a0] hover:bg-[#e9edef] dark:hover:bg-[#2a3942]'
+                  ? 'bg-mint text-white'
+                  : 'border border-line dark:border-linedark text-slate dark:text-slatedark hover:border-ink dark:hover:border-paperdark'
               }`}
             >
               Groups
@@ -112,22 +125,24 @@ export const ChatList: React.FC = () => {
         )}
       </div>
 
-      {/* Archived Chats Header row (if in normal chat tab) */}
+      {/* Archived Row if present */}
       {activeTab === 'chats' && archivedCount > 0 && !searchQuery && (
         <button
           onClick={() => setActiveTab('archived')}
-          className="flex items-center justify-between px-4 py-3 border-b border-[#f0f2f5] dark:border-[#202c33] hover:bg-[#f5f6f6] dark:hover:bg-[#202c33] transition-colors text-left"
+          className="flex items-center justify-between px-4 py-2.5 border-b border-line dark:border-linedark bg-surface/50 dark:bg-surfacedark/50 hover:bg-surface dark:hover:bg-surfacedark transition-colors text-left"
         >
-          <div className="flex items-center gap-3 text-[#111b21] dark:text-[#e9edef]">
-            <Archive className="w-4 h-4 text-[#8696a0]" />
-            <span className="text-sm font-medium">Archived</span>
+          <div className="flex items-center gap-2.5 text-ink dark:text-paperdark">
+            <Archive className="w-4 h-4 text-slate dark:text-slatedark" />
+            <span className="text-xs font-medium">Archived Conversations</span>
           </div>
-          <span className="text-xs font-semibold text-wa-green">{archivedCount}</span>
+          <span className="mini-tag font-mono font-semibold text-cobalt dark:text-cobalt-light">
+            {archivedCount}
+          </span>
         </button>
       )}
 
-      {/* Main Conversations Scrollable List */}
-      <div className="flex-1 overflow-y-auto divide-y divide-[#f0f2f5] dark:divide-[#202c33]">
+      {/* Conversations List */}
+      <div className="flex-1 overflow-y-auto divide-y divide-line/60 dark:divide-linedark/60">
         {filteredContacts.length > 0 ? (
           filteredContacts.map((contact) => (
             <ChatListItem
@@ -138,10 +153,10 @@ export const ChatList: React.FC = () => {
             />
           ))
         ) : (
-          <div className="p-8 text-center text-[#8696a0]">
-            <Filter className="w-10 h-10 mx-auto mb-2 opacity-40" />
-            <p className="text-sm font-medium">No chats found</p>
-            <p className="text-xs mt-1">Try a different search term or start a new chat.</p>
+          <div className="p-8 text-center text-slate dark:text-slatedark">
+            <Filter className="w-8 h-8 mx-auto mb-2 opacity-40" />
+            <p className="text-xs font-medium">No conversations found</p>
+            <p className="mini-tag text-[10px] mt-1">Try another keyword</p>
           </div>
         )}
       </div>

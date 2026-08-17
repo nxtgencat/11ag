@@ -9,22 +9,22 @@ interface DateSeparatorProps {
 export const DateSeparator: React.FC<DateSeparatorProps> = ({ label, isEncryptionNotice }) => {
   if (isEncryptionNotice) {
     return (
-      <div className="flex justify-center my-3 px-4">
-        <div className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#ffeecd] dark:bg-[#182229] border border-[#ffdb99] dark:border-[#2a3942] text-[11px] text-[#54656f] dark:text-[#ffd279] text-center max-w-md shadow-2xs leading-relaxed">
-          <Lock className="w-3.5 h-3.5 shrink-0" />
-          <span>
-            Messages and calls are end-to-end encrypted. No one outside of this chat, not even WhatsApp, can read or listen to them.
-          </span>
+      <div className="flex justify-center my-4 px-4 select-none">
+        <div className="ticket-tag text-[10px] py-1.5 px-3 max-w-md text-center leading-relaxed">
+          <Lock className="w-3 h-3 text-cobalt dark:text-cobalt-light shrink-0" />
+          <span>Messages are end-to-end encrypted · Tearline Signal Protocol</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex justify-center my-3 select-none">
-      <span className="px-3 py-1 rounded-lg bg-white/90 dark:bg-[#182229]/90 text-[11px] font-medium text-[#54656f] dark:text-[#8696a0] shadow-2xs border border-[#e9edef] dark:border-[#2a3942]">
+    <div className="flex items-center gap-3 my-4 select-none px-4">
+      <div className="h-px flex-1 bg-line dark:bg-linedark" />
+      <span className="font-mono text-[10px] tracking-widest text-slate dark:text-slatedark uppercase">
         {label}
       </span>
+      <div className="h-px flex-1 bg-line dark:bg-linedark" />
     </div>
   );
 };

@@ -121,13 +121,10 @@ export const ChatComposer: React.FC<ChatComposerProps> = ({
     } else if (option === 'contact') {
       setShowContactModal(true);
     } else if (option === 'media') {
-      // Trigger real photo/video file picker
       fileMediaInputRef.current?.click();
     } else if (option === 'document') {
-      // Trigger real document file picker
       fileDocInputRef.current?.click();
     } else if (option === 'audio') {
-      // Trigger real audio file picker
       fileAudioInputRef.current?.click();
     }
   };
@@ -149,8 +146,6 @@ export const ChatComposer: React.FC<ChatComposerProps> = ({
     });
     setMediaCaption('');
     setShowMediaPreviewModal(true);
-
-    // Reset input value so same file can be re-selected if needed
     e.target.value = '';
   };
 
@@ -225,7 +220,7 @@ export const ChatComposer: React.FC<ChatComposerProps> = ({
   };
 
   return (
-    <div className="relative bg-[#f0f2f5] dark:bg-[#202c33] px-4 py-2 border-t border-[#e9edef] dark:border-[#222d34] select-none">
+    <div className="relative bg-surface dark:bg-surfacedark px-4 sm:px-6 py-3 border-t border-line dark:border-linedark select-none transition-colors">
       {/* Hidden Real File Inputs */}
       <input
         ref={fileMediaInputRef}
@@ -266,37 +261,30 @@ export const ChatComposer: React.FC<ChatComposerProps> = ({
           {/* Trash / Cancel */}
           <button
             onClick={cancelRecording}
-            className="p-2.5 rounded-full text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors"
+            className="w-9 h-9 rounded-full bg-rose/10 text-rose grid place-content-center hover:bg-rose/20 transition-colors"
             title="Cancel recording"
           >
-            <Trash2 className="w-5 h-5" />
+            <Trash2 className="w-4 h-4" />
           </button>
 
           {/* Recording Timer & Waveform */}
-          <div className="flex-1 flex items-center gap-3 bg-white dark:bg-[#111b21] rounded-2xl px-4 py-2 shadow-2xs border border-[#e9edef] dark:border-[#2a3942]">
-            {/* Blinking Red Dot */}
-            <div className="w-3 h-3 rounded-full bg-rose-500 animate-pulse" />
-
-            {/* Timer */}
-            <span className="font-mono text-sm font-semibold text-[#111b21] dark:text-[#e9edef]">
+          <div className="flex-1 flex items-center gap-3 bg-paper dark:bg-inkdark rounded-xl px-4 py-2 border border-line dark:border-linedark shadow-xs">
+            <div className="w-2.5 h-2.5 rounded-full bg-rose animate-pulse" />
+            <span className="font-mono text-xs font-semibold text-ink dark:text-paperdark">
               {formatSecondsToTimer(recordingTime)}
             </span>
-
-            {/* Waveform Equalizer simulation */}
             <div className="flex-1 flex items-center gap-1 h-5 overflow-hidden">
               {waveformData.map((height, idx) => (
                 <div
                   key={idx}
                   style={{ height: `${height}%` }}
-                  className="w-1 bg-wa-green rounded-full transition-all"
+                  className="w-1 bg-cobalt rounded-full transition-all"
                 />
               ))}
             </div>
-
-            {/* Pause / Resume */}
             <button
               onClick={isPaused ? resumeRecording : pauseRecording}
-              className="p-1 rounded-full text-[#8696a0] hover:text-[#111b21] dark:hover:text-white"
+              className="p-1 text-slate hover:text-ink dark:hover:text-paperdark"
             >
               {isPaused ? <Play className="w-4 h-4 fill-current" /> : <Pause className="w-4 h-4 fill-current" />}
             </button>
@@ -305,10 +293,10 @@ export const ChatComposer: React.FC<ChatComposerProps> = ({
           {/* Send Voice Note */}
           <button
             onClick={handleSendVoiceNote}
-            className="w-11 h-11 rounded-full bg-wa-green-deep hover:bg-wa-green-teal text-white flex items-center justify-center shadow-md transition-transform active:scale-95 shrink-0"
+            className="w-9 h-9 rounded-full bg-cobalt hover:bg-cobalt-dark text-white grid place-content-center shadow-xs active:scale-95 transition-all shrink-0"
             title="Send voice message"
           >
-            <Send className="w-5 h-5 fill-current ml-0.5" />
+            <Send className="w-4 h-4 fill-current ml-0.5" />
           </button>
         </div>
       ) : (
@@ -318,10 +306,10 @@ export const ChatComposer: React.FC<ChatComposerProps> = ({
           <div className="relative">
             <button
               onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-              className="p-2 rounded-full text-[#54656f] dark:text-[#8696a0] hover:text-[#111b21] dark:hover:text-white transition-colors"
+              className="btn-icon w-9 h-9 text-slate dark:text-slatedark hover:text-ink dark:hover:text-paperdark"
               title="Emojis"
             >
-              <Smile className="w-6 h-6" />
+              <Smile className="w-4 h-4" />
             </button>
 
             {showEmojiPicker && (
@@ -341,10 +329,10 @@ export const ChatComposer: React.FC<ChatComposerProps> = ({
           <div className="relative">
             <button
               onClick={() => setShowAttachmentMenu(!showAttachmentMenu)}
-              className="p-2 rounded-full text-[#54656f] dark:text-[#8696a0] hover:text-[#111b21] dark:hover:text-white transition-colors"
+              className="btn-icon w-9 h-9 text-slate dark:text-slatedark hover:text-ink dark:hover:text-paperdark"
               title="Attach"
             >
-              <Paperclip className="w-6 h-6" />
+              <Paperclip className="w-4 h-4" />
             </button>
 
             <AttachmentMenu
@@ -355,16 +343,16 @@ export const ChatComposer: React.FC<ChatComposerProps> = ({
           </div>
 
           {/* Text Input Box */}
-          <div className="flex-1 flex items-center bg-white dark:bg-[#2a3942] rounded-xl px-4 py-2 border border-[#e9edef] dark:border-transparent focus-within:ring-1 focus-within:ring-wa-green transition-all shadow-2xs">
+          <div className="flex-1 flex items-center">
             <input
               ref={inputRef}
               type="text"
-              placeholder="Type a message"
+              placeholder="Write a message…"
               value={text}
               onChange={(e) => setText(e.target.value)}
               onKeyDown={handleKeyDown}
               onPaste={handlePaste}
-              className="w-full bg-transparent text-sm text-[#111b21] dark:text-[#e9edef] placeholder-[#8696a0] outline-none"
+              className="field py-2 text-sm"
             />
           </div>
 
@@ -372,10 +360,10 @@ export const ChatComposer: React.FC<ChatComposerProps> = ({
           {!text.trim() && (
             <button
               onClick={() => setShowCameraModal(true)}
-              className="p-2 rounded-full text-[#54656f] dark:text-[#8696a0] hover:text-[#111b21] dark:hover:text-white transition-colors hidden sm:flex"
+              className="btn-icon w-9 h-9 text-slate dark:text-slatedark hover:text-ink dark:hover:text-paperdark hidden sm:grid"
               title="Camera"
             >
-              <Camera className="w-6 h-6" />
+              <Camera className="w-4 h-4" />
             </button>
           )}
 
@@ -383,18 +371,19 @@ export const ChatComposer: React.FC<ChatComposerProps> = ({
           {text.trim() ? (
             <button
               onClick={handleSendText}
-              className="w-10 h-10 rounded-full bg-wa-green-deep hover:bg-wa-green-teal text-white flex items-center justify-center shadow-md transition-transform active:scale-95 shrink-0"
+              className="btn-primary px-4 py-2 shrink-0 flex items-center gap-1.5"
               title="Send message"
             >
-              <Send className="w-5 h-5 fill-current ml-0.5" />
+              <span className="text-xs font-semibold">Send</span>
+              <Send className="w-3.5 h-3.5 fill-current ml-0.5" />
             </button>
           ) : (
             <button
               onClick={startRecording}
-              className="w-10 h-10 rounded-full bg-wa-green-deep hover:bg-wa-green-teal text-white flex items-center justify-center shadow-md transition-transform active:scale-95 shrink-0"
+              className="w-9 h-9 rounded-full bg-ink dark:bg-paperdark text-paper dark:text-inkdark grid place-content-center hover:opacity-90 active:scale-95 transition-all shrink-0 shadow-xs"
               title="Record voice message"
             >
-              <Mic className="w-5 h-5" />
+              <Mic className="w-4 h-4" />
             </button>
           )}
         </div>
@@ -444,16 +433,15 @@ export const ChatComposer: React.FC<ChatComposerProps> = ({
 
       {/* Real Media Preview Modal before Sending */}
       {showMediaPreviewModal && pendingMedia && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs animate-fade-in">
-          <div className="w-full max-w-xl bg-white dark:bg-[#202c33] rounded-2xl overflow-hidden shadow-wa-modal border border-[#e9edef] dark:border-[#2a3942] flex flex-col animate-pop-in">
-            {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-[#e9edef] dark:border-[#2a3942]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/60 dark:bg-black/80 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-xl card p-0 overflow-hidden flex flex-col animate-pop-in">
+            <div className="flex items-center justify-between p-4 border-b border-line dark:border-linedark">
               <div className="flex items-center gap-2">
-                <span className="font-semibold text-sm text-[#111b21] dark:text-[#e9edef]">
+                <span className="font-display font-semibold text-sm text-ink dark:text-paperdark">
                   Preview {pendingMedia.type === 'video' ? 'Video' : 'Photo'}
                 </span>
-                <span className="text-xs text-[#8696a0] font-mono">
-                  ({pendingMedia.fileSize})
+                <span className="mini-tag font-mono text-[10px]">
+                  {pendingMedia.fileSize}
                 </span>
               </div>
               <button
@@ -461,14 +449,13 @@ export const ChatComposer: React.FC<ChatComposerProps> = ({
                   setShowMediaPreviewModal(false);
                   setPendingMedia(null);
                 }}
-                className="p-1 rounded-full text-[#8696a0] hover:text-[#111b21] dark:hover:text-white"
+                className="btn-icon w-8 h-8"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Media Content Preview */}
-            <div className="h-80 bg-black/90 flex items-center justify-center p-3 relative">
+            <div className="h-80 bg-paper dark:bg-inkdark flex items-center justify-center p-3 relative">
               {pendingMedia.type === 'video' ? (
                 <video
                   src={pendingMedia.url}
@@ -479,16 +466,15 @@ export const ChatComposer: React.FC<ChatComposerProps> = ({
                 <img
                   src={pendingMedia.url}
                   alt="Selected preview"
-                  className="max-h-full max-w-full object-contain rounded-lg shadow-lg"
+                  className="max-h-full max-w-full object-contain rounded-lg shadow-sm"
                 />
               )}
             </div>
 
-            {/* Caption & Send */}
-            <div className="p-4 flex items-center gap-3 bg-[#f0f2f5] dark:bg-[#182229]">
+            <div className="p-4 flex items-center gap-3 bg-surface dark:bg-surfacedark border-t border-line dark:border-linedark">
               <input
                 type="text"
-                placeholder="Add a caption..."
+                placeholder="Add a caption…"
                 value={mediaCaption}
                 onChange={(e) => setMediaCaption(e.target.value)}
                 onKeyDown={(e) => {
@@ -497,15 +483,15 @@ export const ChatComposer: React.FC<ChatComposerProps> = ({
                     handleSendPendingMedia();
                   }
                 }}
-                className="flex-1 px-4 py-2.5 text-sm bg-white dark:bg-[#2a3942] text-[#111b21] dark:text-[#e9edef] rounded-xl outline-none border border-[#e9edef] dark:border-transparent focus:ring-1 focus:ring-wa-green shadow-2xs"
+                className="field py-2 text-xs flex-1"
                 autoFocus
               />
               <button
                 onClick={handleSendPendingMedia}
-                className="w-11 h-11 rounded-full bg-wa-green-deep hover:bg-wa-green-teal text-white flex items-center justify-center shadow-md transition-transform active:scale-95 shrink-0"
-                title="Send"
+                className="btn-primary py-2 px-5 text-xs font-semibold flex items-center gap-1.5 shrink-0"
               >
-                <Send className="w-5 h-5 fill-current ml-0.5" />
+                <span>Send</span>
+                <Send className="w-3.5 h-3.5 fill-current" />
               </button>
             </div>
           </div>

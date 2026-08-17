@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useChat } from '../../context/ChatContext';
 import { useIsMobile } from '../../hooks/useMediaQuery';
 import { NavigationRail } from '../../components/layout/NavigationRail';
@@ -14,6 +14,7 @@ import { EmptyChatState } from '../../components/chat/EmptyChatState';
 import { ContactInfoDrawer } from '../../components/profile/ContactInfoDrawer';
 import { VoiceCallModal } from '../../components/call/VoiceCallModal';
 import { VideoCallModal } from '../../components/call/VideoCallModal';
+import { CommandPaletteModal } from '../../components/common/CommandPaletteModal';
 import { Message, QuotedMessage } from '../../types';
 
 export const ChatsPage: React.FC = () => {
@@ -32,6 +33,19 @@ export const ChatsPage: React.FC = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentMatchIdx, setCurrentMatchIdx] = useState(0);
+  const [isCmdOpen, setIsCmdOpen] = useState(false);
+
+  // Global ⌘K / Ctrl+K listener
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsCmdOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // In-conversation Search Matches
   const matchingMessageIds = useMemo(() => {
@@ -60,8 +74,8 @@ export const ChatsPage: React.FC = () => {
     const el = document.getElementById(`msg-${id}`);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      el.classList.add('bg-wa-green/30');
-      setTimeout(() => el.classList.remove('bg-wa-green/30'), 1500);
+      el.classList.add('ring-2', 'ring-cobalt');
+      setTimeout(() => el.classList.remove('ring-2', 'ring-cobalt'), 1500);
     }
   };
 
@@ -75,7 +89,6 @@ export const ChatsPage: React.FC = () => {
     });
   };
 
-  // Render Left Secondary Sidebar based on ActiveTab
   const renderSidebarContent = () => {
     switch (activeTab) {
       case 'status':
@@ -93,17 +106,13 @@ export const ChatsPage: React.FC = () => {
   };
 
   return (
-    <div className="h-screen w-full flex overflow-hidden bg-[#efeae2] dark:bg-[#0c1317]">
-      {/* Top Green Background Accent Strip on desktop */}
-      <div className="fixed top-0 inset-x-0 h-32 bg-wa-green-deep dark:bg-[#00a884]/15 z-0 hidden lg:block" />
-
-      {/* Main WhatsApp App Container */}
-      <div className="relative z-10 w-full h-full lg:h-[calc(100vh-38px)] lg:max-w-[1600px] lg:my-auto lg:mx-auto bg-white dark:bg-[#111b21] shadow-2xl lg:rounded-xl overflow-hidden flex">
+    <div className="h-screen w-full flex overflow-hidden bg-paper dark:bg-inkdark transition-colors">
+      {/* Main Tearline Container */}
+      <div className="relative w-full h-full lg:h-[calc(100vh-32px)] lg:max-w-[1560px] lg:my-auto lg:mx-auto bg-surface dark:bg-surfacedark lg:border lg:border-line lg:dark:border-linedark lg:rounded-2xl lg:shadow-xl overflow-hidden flex">
         {/* Far Left Navigation Rail (Hidden on Mobile) */}
         {!isMobile && <NavigationRail />}
 
         {/* Sidebar (ChatList, Status, Channels, Calls) */}
-        {/* On Mobile: Only show if activeChatId is null (i.e. on main list view) */}
         {(!isMobile || !activeChatId) && (
           <div className="w-full md:w-80 lg:w-96 h-full shrink-0 flex flex-col">
             {renderSidebarContent()}
@@ -111,9 +120,8 @@ export const ChatsPage: React.FC = () => {
         )}
 
         {/* Main Conversation Screen */}
-        {/* On Mobile: Only show if activeChatId is selected */}
         {(!isMobile || activeChatId) && (
-          <div className="flex-1 flex flex-col h-full min-w-0 relative">
+          <div className="flex-1 flex flex-col h-full min-w-0 relative bg-paper dark:bg-inkdark">
             {activeContact ? (
               <>
                 {/* Header */}
@@ -171,6 +179,12 @@ export const ChatsPage: React.FC = () => {
           />
         )}
       </div>
+
+      {/* Global Command Palette (⌘K) */}
+      <CommandPaletteModal
+        isOpen={isCmdOpen}
+        onClose={() => setIsCmdOpen(false)}
+      />
 
       {/* Global Interactive Voice & Video Call Modals */}
       <VoiceCallModal />
