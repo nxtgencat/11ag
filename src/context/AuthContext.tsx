@@ -6,6 +6,7 @@ export type AuthStep = 'phone' | 'otp' | 'profile' | 'authenticated';
 interface AuthContextType {
   user: UserProfile | null;
   authStep: AuthStep;
+  setAuthStep: (step: AuthStep) => void;
   tempPhone: string;
   tempCountryCode: string;
   loginWithPhone: (countryCode: string, phone: string) => Promise<boolean>;
@@ -19,46 +20,19 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const DEFAULT_USER: UserProfile = {
-  id: 'me',
-  name: 'Alex Morgan',
-  phone: '+1 (555) 019-2834',
-  avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
-  about: 'Available | Building cool things 🚀',
-  countryCode: 'US',
-  isLoggedIn: true,
-};
-
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<UserProfile | null>(() => {
-    try {
-      const saved = localStorage.getItem('wa_user_profile');
-      return saved ? JSON.parse(saved) : DEFAULT_USER;
-    } catch {
-      return DEFAULT_USER;
-    }
-  });
-
-  const [authStep, setAuthStep] = useState<AuthStep>(() => {
-    try {
-      const saved = localStorage.getItem('wa_user_profile');
-      return saved ? 'authenticated' : 'authenticated'; // Default directly into authenticated for convenience, or can test login
-    } catch {
-      return 'authenticated';
-    }
-  });
+  // Always default to null and 'phone' so user must go through sign-in flow
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const [authStep, setAuthStep] = useState<AuthStep>('phone');
 
   const [tempPhone, setTempPhone] = useState('');
   const [tempCountryCode, setTempCountryCode] = useState('US');
   const [resendCountdown, setResendCountdown] = useState(30);
 
+  // Clear stale cached session on mount
   useEffect(() => {
-    if (user) {
-      localStorage.setItem('wa_user_profile', JSON.stringify(user));
-    } else {
-      localStorage.removeItem('wa_user_profile');
-    }
-  }, [user]);
+    localStorage.removeItem('wa_user_profile');
+  }, []);
 
   useEffect(() => {
     let interval: number | undefined;
@@ -110,6 +84,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(null);
     setAuthStep('phone');
     setTempPhone('');
+    localStorage.removeItem('wa_user_profile');
   };
 
   const resendOtp = () => {
@@ -121,6 +96,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       value={{
         user,
         authStep,
+        setAuthStep,
         tempPhone,
         tempCountryCode,
         loginWithPhone,

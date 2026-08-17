@@ -126,7 +126,9 @@ export const OtpVerification: React.FC = () => {
           {[0, 1, 2].map((idx) => (
             <input
               key={idx}
-              ref={(el) => (inputRefs.current[idx] = el)}
+              ref={(el) => {
+                inputRefs.current[idx] = el;
+              }}
               type="text"
               inputMode="numeric"
               maxLength={1}
@@ -144,7 +146,9 @@ export const OtpVerification: React.FC = () => {
           {[3, 4, 5].map((idx) => (
             <input
               key={idx}
-              ref={(el) => (inputRefs.current[idx] = el)}
+              ref={(el) => {
+                inputRefs.current[idx] = el;
+              }}
               type="text"
               inputMode="numeric"
               maxLength={1}

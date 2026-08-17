@@ -1,6 +1,6 @@
 # 💬 WhatsApp Clone — Tearline Design System Edition
 
-A responsive, feature-complete WhatsApp Web and Mobile chat interface crafted using the **Tearline Design System** with **React**, **Vite**, **TypeScript**, and **Tailwind CSS**.
+A responsive, feature-complete WhatsApp Web and Mobile chat interface crafted using the **Tearline Design System** with **React 19**, **Vite 8**, **TypeScript 7**, and **Tailwind CSS v4**.
 
 ---
 
@@ -9,8 +9,19 @@ A responsive, feature-complete WhatsApp Web and Mobile chat interface crafted us
 | Question | Explanation |
 | :--- | :--- |
 | **What is it?** | A frontend clone of WhatsApp Web and Mobile faithfully adopting the **Tearline Design System** (`design/tearline/index.html`): Space Grotesk headings, IBM Plex Mono timestamps & tags, Inter body typography, Cobalt & Paper color palettes, ticket tags, perforated dividers, and a global `⌘K` command palette. |
-| **Why?** | To demonstrate a production-grade frontend messaging architecture matching the exact aesthetic, tokens, and micro-interactions of the Tearline component library. |
-| **How does it work?** | Built using React Contexts (`AuthContext`, `ChatContext`, `CallContext`, `ThemeContext`) for real-time reactivity and local persistence, styled with Tailwind utility classes, and bundled with Vite. |
+| **Why?** | To demonstrate a production-grade frontend messaging architecture matching the exact aesthetic, tokens, and micro-interactions of the Tearline component library with the latest modern dependencies. |
+| **How does it work?** | Built using React Contexts (`AuthContext`, `ChatContext`, `CallContext`, `ThemeContext`) for real-time reactivity and local persistence, styled with Tailwind CSS v4 `@tailwindcss/vite`, and bundled with Vite 8. |
+
+---
+
+## 🛠️ Upgraded Modern Tech Stack
+
+- **Framework**: **React 19.2.8** + **TypeScript 7.0.2**
+- **Build Engine**: **Vite 8.2.1** with native lightning-fast compilation (`707ms` production builds)
+- **Styling Engine**: **Tailwind CSS 4.3.3** (`@tailwindcss/vite` + `@tailwindcss/postcss`)
+- **Icons**: Lucide React + WhatsApp SVG icons
+- **Audio Engine**: Web Audio API (real-time message sounds & voice note waveforms)
+- **Package Manager**: `pnpm` exclusively
 
 ---
 
@@ -42,7 +53,9 @@ whatsapp-clone/
 ├── index.html
 ├── package.json
 ├── tailwind.config.js
+├── postcss.config.js
 ├── vite.config.ts
+├── tsconfig.json
 │
 └── src/
     ├── app/
@@ -56,14 +69,14 @@ whatsapp-clone/
     │   └── ThemeContext.tsx            # Light/Dark mode & wallpaper picker
     │
     ├── components/                     # Reusable UI Primitives
-    │   ├── auth/                       # PhoneLogin, OtpVerification, ProfileSetup
+    │   ├── auth/                       # PhoneLogin, OtpVerification (3-dash-3), ProfileSetup
     │   ├── chat/                       # ChatList, ChatListItem, ChatHeader, ChatComposer, EmptyChatState
     │   ├── messages/                   # MessageBubble, Text, Images, Videos, Voice, Docs, Locations, DateSeparator
     │   ├── media/                      # AttachmentMenu, MediaViewer (Lightbox), VideoPlayer, Camera, LocationPicker
     │   ├── profile/                    # ContactInfoDrawer, SharedMediaTab, StarredMessages, SettingsModal
     │   ├── call/                       # VoiceCallModal, VideoCallModal
     │   ├── layout/                     # NavigationRail, Sidebar, ResponsiveContainer
-    │   └── common/                     # CommandPaletteModal (⌘K), Avatar, Modal, Dropdown, EmojiPicker, Toast
+    │   └── common/                     # CommandPaletteModal (⌘K), Avatar, Modal, Dropdown, EmojiPicker, Toast (Sonner)
     │
     ├── data/                           # Mock Datasets
     │   ├── contacts.ts                 # 52 unique realistic contacts & groups
@@ -84,6 +97,7 @@ whatsapp-clone/
     │   └── index.ts                    # User, Contact, Message, Attachment, Call types
     │
     ├── index.css                       # Tearline custom scrollbars, tags, buttons & CSS layers
+    ├── vite-env.d.ts                   # Vite client declarations
     └── main.tsx                        # DOM mount entry
 ```
 
