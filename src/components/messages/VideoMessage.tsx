@@ -23,11 +23,22 @@ export const VideoMessage: React.FC<VideoMessageProps> = ({
     <>
       <div className="space-y-1.5 cursor-pointer" onClick={() => setIsOpen(true)}>
         <div className="relative rounded-xl overflow-hidden max-h-72 bg-black/10 group">
-          <img
-            src={attachment.thumbnailUrl || 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600&auto=format&fit=crop&q=80'}
-            alt="Video thumbnail"
-            className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300"
-          />
+          {attachment.thumbnailUrl ? (
+            <img
+              src={attachment.thumbnailUrl}
+              alt="Video thumbnail"
+              className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300"
+              loading="lazy"
+            />
+          ) : (
+            <video
+              src={attachment.url}
+              muted
+              playsInline
+              preload="metadata"
+              className="w-full max-h-72 object-cover group-hover:scale-102 transition-transform duration-300"
+            />
+          )}
           {/* Play Icon Center */}
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="w-12 h-12 rounded-full bg-black/60 text-white flex items-center justify-center backdrop-blur-xs group-hover:scale-110 transition-transform">

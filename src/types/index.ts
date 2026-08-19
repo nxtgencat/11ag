@@ -90,6 +90,7 @@ export interface Contact {
   isFavorite?: boolean;
   isGroup?: boolean;
   groupMembersCount?: number;
+  members?: string[];
   unreadCount: number;
   lastMessage?: {
     text: string;

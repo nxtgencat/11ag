@@ -21,7 +21,52 @@ interface PendingMediaState {
   type: MessageType;
   fileName: string;
   fileSize: string;
+  thumbnailUrl?: string;
+  mimeType?: string;
 }
+
+const generateVideoThumbnail = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const video = document.createElement('video');
+    video.preload = 'metadata';
+    video.muted = true;
+    video.playsInline = true;
+    video.src = url;
+
+    const cleanup = () => {
+      video.removeAttribute('src');
+      URL.revokeObjectURL(url);
+    };
+
+    video.onloadeddata = () => {
+      video.currentTime = Math.min(0.1, video.duration || 0);
+    };
+    video.onseeked = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth || 640;
+        canvas.height = video.videoHeight || 360;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          cleanup();
+          reject(new Error('canvas unavailable'));
+          return;
+        }
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        cleanup();
+        resolve(canvas.toDataURL('image/jpeg', 0.7));
+      } catch (err) {
+        cleanup();
+        reject(err);
+      }
+    };
+    video.onerror = () => {
+      cleanup();
+      reject(new Error('video load failed'));
+    };
+  });
+};
 
 export const ChatComposer: React.FC<ChatComposerProps> = ({
   quotedMessage,
@@ -130,19 +175,22 @@ export const ChatComposer: React.FC<ChatComposerProps> = ({
   };
 
   // Real Photo / Video File Selected
-  const handleMediaFilesSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleMediaFilesSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
     const file = files[0];
     const isVideo = file.type.startsWith('video/');
     const url = URL.createObjectURL(file);
+    const thumbnailUrl = isVideo ? await generateVideoThumbnail(file).catch(() => undefined) : undefined;
 
     setPendingMedia({
       url,
       type: isVideo ? 'video' : 'image',
       fileName: file.name,
       fileSize: formatFileSize(file.size),
+      thumbnailUrl,
+      mimeType: file.type,
     });
     setMediaCaption('');
     setShowMediaPreviewModal(true);
@@ -165,6 +213,7 @@ export const ChatComposer: React.FC<ChatComposerProps> = ({
           url,
           fileName: file.name,
           fileSize: sizeStr,
+          mimeType: file.type,
         },
         quotedMessage: quotedMessage || undefined,
       });
@@ -210,6 +259,8 @@ export const ChatComposer: React.FC<ChatComposerProps> = ({
         url: pendingMedia.url,
         fileName: pendingMedia.fileName,
         fileSize: pendingMedia.fileSize,
+        thumbnailUrl: pendingMedia.thumbnailUrl,
+        mimeType: pendingMedia.mimeType,
       },
       quotedMessage: quotedMessage || undefined,
     });

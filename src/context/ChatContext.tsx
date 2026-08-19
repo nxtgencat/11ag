@@ -48,6 +48,7 @@ interface ChatContextType {
   markAsRead: (chatId: string) => void;
   toggleFavorite: (chatId: string) => void;
   createChatWithContact: (contact: Partial<Contact>) => string;
+  createGroupChat: (name: string, memberIds: string[], avatar?: string) => string;
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -465,6 +466,47 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return id;
   }, []);
 
+  // Create a new group chat
+  const createGroupChat = useCallback((name: string, memberIds: string[], avatar?: string): string => {
+    const id = generateId('group');
+    const memberCount = memberIds.length + 1; // includes you
+    const nowStr = 'Today at ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    const newGroup: Contact = {
+      id,
+      name: name.trim() || 'New Group',
+      phone: 'group',
+      avatar: avatar || '',
+      about: `Group · ${memberCount} members`,
+      isOnline: true,
+      unreadCount: 0,
+      lastSeen: 'online',
+      isGroup: true,
+      groupMembersCount: memberCount,
+      members: memberIds,
+    };
+
+    setContacts(prev => [newGroup, ...prev]);
+    setActiveChatIdState(id);
+
+    // Welcome / system message
+    setMessages(prev => ({
+      ...prev,
+      [id]: [{
+        id: generateId('msg'),
+        chatId: id,
+        senderId: 'system',
+        senderName: 'System',
+        text: `📢 ${name.trim() || 'Group'} created with ${memberCount} members. Say hi! 👋`,
+        type: 'text',
+        timestamp: nowStr,
+        status: 'read',
+      }],
+    }));
+
+    return id;
+  }, []);
+
   return (
     <ChatContext.Provider
       value={{
@@ -497,6 +539,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
         markAsRead,
         toggleFavorite,
         createChatWithContact,
+        createGroupChat,
       }}
     >
       {children}
