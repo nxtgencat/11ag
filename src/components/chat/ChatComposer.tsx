@@ -202,6 +202,27 @@ export const ChatComposer: React.FC<ChatComposerProps> = ({
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
+    const file = files[0];
+    const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+
+    // Single PDF → show confirmation preview before sending
+    if (files.length === 1 && isPdf) {
+      const url = URL.createObjectURL(file);
+
+      setPendingMedia({
+        url,
+        type: 'document',
+        fileName: file.name,
+        fileSize: formatFileSize(file.size),
+        mimeType: file.type,
+      });
+      setMediaCaption('');
+      setShowMediaPreviewModal(true);
+      onClearQuotedMessage();
+      e.target.value = '';
+      return;
+    }
+
     Array.from(files).forEach((file) => {
       const url = URL.createObjectURL(file);
       const sizeStr = formatFileSize(file.size);
@@ -489,7 +510,7 @@ export const ChatComposer: React.FC<ChatComposerProps> = ({
             <div className="flex items-center justify-between p-4 border-b border-line dark:border-linedark">
               <div className="flex items-center gap-2">
                 <span className="font-display font-semibold text-sm text-ink dark:text-paperdark">
-                  Preview {pendingMedia.type === 'video' ? 'Video' : 'Photo'}
+                  Preview {pendingMedia.type === 'video' ? 'Video' : pendingMedia.type === 'document' ? 'Document' : 'Photo'}
                 </span>
                 <span className="mini-tag font-mono text-[10px]">
                   {pendingMedia.fileSize}
@@ -512,6 +533,12 @@ export const ChatComposer: React.FC<ChatComposerProps> = ({
                   src={pendingMedia.url}
                   controls
                   className="max-h-full max-w-full rounded-lg object-contain"
+                />
+              ) : pendingMedia.type === 'document' ? (
+                <iframe
+                  src={pendingMedia.url}
+                  title={pendingMedia.fileName || 'PDF preview'}
+                  className="w-full h-full rounded-lg bg-white"
                 />
               ) : (
                 <img
